@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "./Components/Input";
 import Numbers from "./Components/Numbers";
+import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newnumber, setnumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
+
+  const hook = () => {
+    console.log("Here's the hook");
+    axios
+    .get("http://localhost:3001/persons")
+    .then((response) => {
+      console.log("promise fulfilled");
+      setPersons(response.data);
+    });
+  };
+  console.log("render", persons.length, "persons")
+
+  useEffect(hook, []);
 
   const equals = (objectA, objectB) => {
     const a = Object.getOwnPropertyNames(objectA);
@@ -23,9 +33,9 @@ const App = () => {
     return true;
   };
 
-  const nameHandler = (event) => setNewName(event.target.value)
-  const numberHandler = (event) => setnumber(event.target.value)
-  const filterHandler = (event) => setFilterValue(event.target.value)
+  const nameHandler = (event) => setNewName(event.target.value);
+  const numberHandler = (event) => setnumber(event.target.value);
+  const filterHandler = (event) => setFilterValue(event.target.value);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -45,14 +55,22 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Input name={"fillter names with"} handlerFunction={filterHandler} value={filterValue} />  
+      <Input
+        name={"fillter names with"}
+        handlerFunction={filterHandler}
+        value={filterValue}
+      />
       <form onSubmit={submitHandler}>
-            <h2>add a new</h2>
-            <Input name={"name"} handlerFunction={nameHandler} value={newName} />
-            <Input name={"number"} handlerFunction={numberHandler} value={newnumber} />
-          <button type="submit">add</button>
+        <h2>add a new</h2>
+        <Input name={"name"} handlerFunction={nameHandler} value={newName} />
+        <Input
+          name={"number"}
+          handlerFunction={numberHandler}
+          value={newnumber}
+        />
+        <button type="submit">add</button>
       </form>
-      <Numbers filter={filterValue} persons={persons}/>
+      <Numbers filter={filterValue} persons={persons} />
     </div>
   );
 };
