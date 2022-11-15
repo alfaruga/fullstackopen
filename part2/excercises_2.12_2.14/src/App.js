@@ -10,19 +10,16 @@ function App() {
   const searchHandler = (event) => {setSearch(event.target.value)};
   const filterFunction = (listOfCountries) => listOfCountries.filter((value) => value.name.common.toLowerCase().includes(search.toLowerCase()));
   
-
   useEffect(() => {
     axios.get("https://restcountries.com/v3.1/all").then((response) => {
-      console.log("promise fullfiled");
       const restCountries = response.data.map((country) => country);
       setCountries(restCountries);
     });
   }, []);
-
   
   var content = "";
   const filteredCountries = filterFunction(countries);
-
+  
   if (search === "") {
     content = "Countries will be displayed in here!";
   } else if (filteredCountries.length > 10) {
@@ -36,9 +33,8 @@ function App() {
   }
   return (
     <div className="App">
-      <h1>public stuff</h1>
+      <h1>FULL APP!</h1>
       find countries<input value={search} onChange={searchHandler}></input>
-      
       {content}
     </div>
   );
