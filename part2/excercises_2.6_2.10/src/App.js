@@ -36,13 +36,6 @@ const App = () => {
     }
   };
 
-  const replaceHandler = (name, newPhone) => {
-    const updatedPhoneBook = persons.map((person) => {
-      return person.name === name ? { ...person, number: newPhone } : person;
-    });
-    setPersons(updatedPhoneBook);
-  };
-
   const submitHandler = (event) => {
     event.preventDefault();
     const alreadyAdded = persons.some((person) => person.name === newName);
@@ -52,7 +45,19 @@ const App = () => {
         window.confirm(`${newName} is already added to phonebook, replace the old number
       with a new one?`)
       ) {
-        replaceHandler(newName, newnumber);
+        var phoneNumber = persons.find((person) => person.name === newName);
+        console.log(phoneNumber, "cuando lo buscas")
+        const id = phoneNumber.id;
+        phoneNumber = { ...phoneNumber, number: newnumber };
+
+        phoneService.update(id, phoneNumber).then((response) => {
+          console.log(response, "actualizado");
+          setPersons(
+            persons.map((person) => {
+              return person.name !== phoneNumber.name ? person : response;
+            })
+          );
+        });
       }
     } else {
       const newPhone = {
