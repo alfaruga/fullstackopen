@@ -1,11 +1,15 @@
 import Number from "./Number";
 
 const Numbers = (props) =>{
+  const deletePhone =(id)=>{
+    
+    props.deletePhone(id)
+  }
     const content =
     props.filter === ""
       ? props.persons.map((person) => {
           return (
-            <Number key={person.name} data={person}/>
+            <Number key={person.name} data={person} deletes= {deletePhone}/>
           );
         })
       : props.persons
@@ -13,7 +17,7 @@ const Numbers = (props) =>{
             person.name.toLowerCase().match(props.filter.toLowerCase())
           )
           .map((person) => (
-            <Number key={person.name} data={person}/>
+            <Number key={person.name} data={person} deletes= {deletePhone}/>
           ));
     return(
         <div>
