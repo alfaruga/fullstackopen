@@ -22,19 +22,18 @@ const App = () => {
   const filterHandler = (event) => setFilterValue(event.target.value);
 
   const deleteHandler = (id) => {
-    console.log(phoneService.retrieve());
     if (
       window.confirm(
         `Delete ${persons.find((person) => person.id === id).name}?`
       )
     ) {
-      phoneService.deleteNumber(id).then(() => {
-        phoneService.retrieve().then((response) => {
-          setPersons(response);
-        });
-      });
+      phoneService.deleteNumber(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
     }
-  };
+    }
+  ;
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -46,15 +45,13 @@ const App = () => {
       with a new one?`)
       ) {
         var phoneNumber = persons.find((person) => person.name === newName);
-        console.log(phoneNumber, "cuando lo buscas")
         const id = phoneNumber.id;
-        phoneNumber = { ...phoneNumber, number: newnumber };
+        const changedPhoneNumber = { ...phoneNumber, number: newnumber };
 
-        phoneService.update(id, phoneNumber).then((response) => {
-          console.log(response, "actualizado");
+        phoneService.update(id, changedPhoneNumber).then((response) => {
           setPersons(
             persons.map((person) => {
-              return person.name !== phoneNumber.name ? person : response;
+              return person.id !== changedPhoneNumber.id ? person : response;
             })
           );
         });
@@ -66,7 +63,7 @@ const App = () => {
       };
 
       phoneService
-        .post(newPhone)
+        .create(newPhone)
         .then((response) => setPersons(persons.concat(response)));
     }
     setNewName("");
@@ -82,13 +79,9 @@ const App = () => {
         value={filterValue}
       />
       <form onSubmit={submitHandler}>
-        <h2>add a new</h2>
+        <h2>add a new phonenumber</h2>
         <Input name={"name"} handlerFunction={nameHandler} value={newName} />
-        <Input
-          name={"number"}
-          handlerFunction={numberHandler}
-          value={newnumber}
-        />
+        <Input name={"number"} handlerFunction={numberHandler} value={newnumber}/>
         <button type="submit">add</button>
       </form>
       <Numbers

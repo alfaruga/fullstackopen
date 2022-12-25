@@ -1,16 +1,10 @@
-
 const Number = (props) => {
-    const deleteHandler = () =>{
-        
-        props.deletes(props.data.id)
-
-      }
   return (
     <div>
       <span>
-        {props.data.name} {props.data.number} 
+        {props.data.name} {props.data.number}
       </span>
-      <button onClick={deleteHandler}>Delete</button>
+      <button onClick={() => props.deletes(props.data.id)}>Delete</button>
     </div>
   );
 };
