@@ -1,6 +1,13 @@
 const { response, request } = require("express");
 const express = require("express");
 const app = express();
+
+const morgan = require('morgan')
+app.use(morgan('tiny'))
+morgan.token('body', (req, res)=>JSON.stringify(req.body))
+app.use(morgan(':method :url :status :response-time ms :body'))
+
+
 let data = [
   {
     id: 1,
@@ -44,7 +51,8 @@ app.listen(PORT, () => {
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   const phoneData = data.find((person) => person.id === id);
-  response.json(phoneData);
+  //response.json(phoneData);
+  response.send(`<p>the data is ${JSON.stringify(phoneData)}</p>`)
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -58,7 +66,7 @@ app.use(express.json());
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  console.log(body);
+  
 
   if (!body.name || !body.number) {
     return response.status(400).json({
