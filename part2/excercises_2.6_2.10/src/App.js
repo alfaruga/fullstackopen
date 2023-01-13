@@ -75,10 +75,15 @@ const App = () => {
       };
 
       phoneService.create(newPhone).then((response) => {
-        setPersons(persons.concat(response));
+        setPersons(persons.concat(response.data));
+
       });
 
       messageHandler(`Added ${newPhone.name}`);
+
+      phoneService.retrieve().then((response) => {
+        setPersons(response);
+      })
     }
     setNewName("");
     setnumber("");

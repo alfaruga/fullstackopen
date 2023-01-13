@@ -4,6 +4,10 @@
   "description": "fullstackopen 3 part exercises ",
   "main": "index.js",
   "scripts": {
+    "build:ui":"rm -rf build & cd ../part2/excercises_2.6_2.10 && npm run build && cp -r build ../../part3",
+    "deploy": "flyctl deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "flyctl logs",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,8 +15,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "morgan": "^1.10.0"
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+    
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
