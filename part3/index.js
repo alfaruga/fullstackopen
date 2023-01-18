@@ -1,12 +1,12 @@
 const { response, request } = require("express");
 const express = require("express");
 const app = express();
+const cors = require('cors')
 
-const morgan = require('morgan')
-app.use(morgan('tiny'))
+/* const morgan = require('morgan')
 morgan.token('body', (req, res)=>JSON.stringify(req.body))
 app.use(morgan(':method :url :status :response-time ms :body'))
-
+ */
 
 let data = [
   {
@@ -30,6 +30,9 @@ let data = [
     number: "39-23-6423122",
   },
 ];
+app.use(express.json());
+app.use(cors());
+app.use(express.static('build'));
 
 app.get("/api/persons", (request, response) => {
   response.json(data);
@@ -43,7 +46,7 @@ app.get("/info", (request, response) => {
     <p>${new Date()}</p>`
   );
 });
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server runing on port ${PORT}`);
 });
@@ -61,7 +64,6 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
-app.use(express.json());
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
@@ -77,7 +79,6 @@ app.post("/api/persons", (request, response) => {
       error: "This person is already registered",
     });
   }
-
   const phoneData = {
     ...body,
     id: Math.floor(Math.random() * 100),

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3001/persons";
+const baseUrl = "/api/persons";
 
 const retrieve = () => axios.get(baseUrl).then((response) => response.data); //retrieves the full database
 
 const create = (phoneNumber) => {
-  return axios.post(baseUrl, phoneNumber).then((response) => response.data); //post to DB and returns the posted object only
+  return axios.post(baseUrl, phoneNumber); //post to DB and returns the posted object only
 };
 
 const deleteNumber = (id) => {
