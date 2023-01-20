@@ -13,7 +13,8 @@ const App = () => {
   const [error, setError] = useState(false);
   const hook = () => {
     phoneService.retrieve().then((response) => {
-      setPersons(response);
+      console.log(response.data);
+      setPersons(response.data);
     });
   };
 
@@ -32,13 +33,16 @@ const App = () => {
     const nameToDelete = persons.find((person) => person.id === id).name;
 
     if (window.confirm(`Delete ${nameToDelete}?`)) {
+      console.log(nameToDelete, id);
       phoneService
         .deleteNumber(id)
-        .then(() => {
+        .then((result) => {
+          console.log("it's updatting persons state");
           setPersons(persons.filter((person) => person.id !== id));
           setError(false);
         })
         .catch((error) => {
+          console.log(error);
           messageHandler(
             `Information of ${nameToDelete} has already been removed from server`
           );
@@ -59,14 +63,17 @@ const App = () => {
         const id = phoneNumber.id;
         const changedPhoneNumber = { ...phoneNumber, number: newnumber };
 
-        phoneService.update(id, changedPhoneNumber).then((response) => {
-          setPersons(
-            persons.map((person) => {
-              return person.id !== changedPhoneNumber.id ? person : response;
-            })
-          );
-          messageHandler(`Updated ${changedPhoneNumber.name}'s number`);
-        });
+        phoneService
+          .update(id, changedPhoneNumber /*this is the body*/)
+          .then((response) => {
+            console.log(response);
+            setPersons(
+              persons.map((person) => {
+                return person.id !== changedPhoneNumber.id ? person : response.data;
+              })
+            );
+            messageHandler(`Updated ${changedPhoneNumber.name}'s number`);
+          });
       }
     } else {
       const newPhone = {
@@ -74,19 +81,25 @@ const App = () => {
         number: newnumber,
       };
 
-      phoneService.create(newPhone).then((response) => {
-        setPersons(persons.concat(response.data));
-
-      });
-
-      messageHandler(`Added ${newPhone.name}`);
+      phoneService
+        .create(newPhone)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          messageHandler(`Added ${newPhone.name}`);
+          console.log(persons);
+        })
+        .catch((error) => {
+          messageHandler(`Error: Name or number are missing`);
+          setError(true);
+        });
 
       phoneService.retrieve().then((response) => {
-        setPersons(response);
-      })
+        setPersons(response.data);
+      });
     }
     setNewName("");
     setnumber("");
+    setError(false)
   };
 
   return (
