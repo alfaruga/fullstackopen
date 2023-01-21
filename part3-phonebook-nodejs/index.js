@@ -39,13 +39,18 @@ let data = [
 app.use(express.json());
 app.use(cors());
 app.use(express.static("build"));
+
 app.get("/info", (request, response) => {
-  response.send(
-    `<p>
-      Phonebook has info for ${undefined} people
-    </p>
-    <p>${new Date()}</p>`
-  );
+ 
+
+  Person.countDocuments({}, (error, count) => {
+    response.send(
+      `<p>
+    Phonebook has info for ${count} people
+  </p>
+  <p>${new Date()}</p>`
+    );
+  })
 });
 
 app.post("/api/persons", (request, response) => {
@@ -106,11 +111,11 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
   console.log("this is the body:", request.body); //The request body is the second parameter in the put method
   const phoneNumber = request.body;
-  console.log("phone number:", phoneNumber)
-  console.log("id", request.params.id, typeof(request.params.id))
+  console.log("phone number:", phoneNumber);
+  console.log("id", request.params.id, typeof request.params.id);
   Person.findByIdAndUpdate(request.params.id, phoneNumber, { new: true })
     .then((updatedPhone) => {
-      console.log("is this the error?: ",updatedPhone);
+      console.log("is this the error?: ", updatedPhone);
       response.json(updatedPhone);
     })
     .catch((error) => next(error));
