@@ -12,6 +12,14 @@ const { update } = require("./models/phone");
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(morgan(":method :url :status :response-time ms :body"));
 
+const errorHandler = (error, request, response, next) => {
+  if (error.name === "CastError") {
+    return response.satus(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
+  next(error);
+};
 /* 
 this was used before we connected th app to mongo
 let data = [
@@ -41,8 +49,6 @@ app.use(cors());
 app.use(express.static("build"));
 
 app.get("/info", (request, response) => {
- 
-
   Person.countDocuments({}, (error, count) => {
     response.send(
       `<p>
@@ -50,18 +56,18 @@ app.get("/info", (request, response) => {
   </p>
   <p>${new Date()}</p>`
     );
-  })
+  });
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
-  console.log("this is the body:", !body.name);
-  if (!body.name || !body.number) {
+  //console.log("this is the body:", body, !body.name);
+  /*  if (!body.name || !body.number) {
     console.log("found it!");
     return response.status(400).json({
       error: "Name or number are missing",
     });
-  } /* else if (data.some((phone) => phone.name === body.name)) {
+  }  */ /* else if (data.some((phone) => phone.name === body.name)) {
     return response.status(400).json({
       error: "This person is already registered",
     });
@@ -73,10 +79,15 @@ app.post("/api/persons", (request, response) => {
     date: new Date(),
   });
 
-  phoneData.save().then((savedPhone) => {
-    console.log("Phone succesfully saved!");
-    response.json(savedPhone);
-  });
+  phoneData
+    .save()
+    .then((savedPhone) => {
+      console.log("Phone succesfully saved!");
+      response.json(savedPhone);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((phoneBook) => {
@@ -104,32 +115,26 @@ app.delete("/api/persons/:id", (request, response, next) => {
       response.status(204).end();
     })
     .catch((error) => {
-      console.log("does reach error?");
       next(error);
     });
 });
 app.put("/api/persons/:id", (request, response, next) => {
   console.log("this is the body:", request.body); //The request body is the second parameter in the put method
   const phoneNumber = request.body;
-  console.log("phone number:", phoneNumber);
-  console.log("id", request.params.id, typeof request.params.id);
-  Person.findByIdAndUpdate(request.params.id, phoneNumber, { new: true })
+
+  Person.findByIdAndUpdate(request.params.id, phoneNumber, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPhone) => {
-      console.log("is this the error?: ", updatedPhone);
       response.json(updatedPhone);
     })
     .catch((error) => next(error));
 });
 
-const errorHandler = (request, response, error, next) => {
-  console.log(error.message);
-
-  if (error.name === "CastError") {
-    return response.satus(400).send({ error: "malformatted id" });
-  }
-  next(error);
-};
 app.use(errorHandler);
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server runing on port ${PORT}`);

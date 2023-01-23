@@ -23,7 +23,7 @@ const App = () => {
   const nameHandler = (event) => setNewName(event.target.value);
   const numberHandler = (event) => setnumber(event.target.value);
   const filterHandler = (event) => setFilterValue(event.target.value);
-  const messageHandler = (newMessage) => {
+  const messageHandler = (newMessage) => {';'
     setMessage(newMessage);
     setTimeout(() => {
       setMessage(null);
@@ -66,13 +66,16 @@ const App = () => {
         phoneService
           .update(id, changedPhoneNumber /*this is the body*/)
           .then((response) => {
-            console.log(response);
+            console.log("Se actualizo",response);
             setPersons(
               persons.map((person) => {
                 return person.id !== changedPhoneNumber.id ? person : response.data;
               })
             );
             messageHandler(`Updated ${changedPhoneNumber.name}'s number`);
+          }).catch(error=>{
+            messageHandler(`Error: ${error.response.data.error}`);
+            setError(true);
           });
       }
     } else {
@@ -87,15 +90,16 @@ const App = () => {
           setPersons(persons.concat(response.data));
           messageHandler(`Added ${newPhone.name}`);
           console.log(persons);
+          phoneService.retrieve().then((response) => {
+            setPersons(response.data);
+          });
         })
         .catch((error) => {
-          messageHandler(`Error: Name or number are missing`);
+          messageHandler(`Error: ${error.response.data.error}`);
           setError(true);
         });
 
-      phoneService.retrieve().then((response) => {
-        setPersons(response.data);
-      });
+    
     }
     setNewName("");
     setnumber("");
