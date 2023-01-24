@@ -1,25 +1,23 @@
-require("dotenv").config();
+require('dotenv').config()
 
-const express = require("express");
-const app = express();
-const cors = require("cors");
+const express = require('express')
+const app = express()
+const cors = require('cors')
 
-const Person = require("./models/phone");
+const Person = require('./models/phone')
 
-const morgan = require("morgan");
-const { request } = require("express");
-const { update } = require("./models/phone");
-morgan.token("body", (req, res) => JSON.stringify(req.body));
-app.use(morgan(":method :url :status :response-time ms :body"));
+const morgan = require('morgan')
+morgan.token('body', (req, res) => JSON.stringify(req.body))
+app.use(morgan(':method :url :status :response-time ms :body'))
 
 const errorHandler = (error, request, response, next) => {
-  if (error.name === "CastError") {
-    return response.satus(400).send({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({ error: error.message });
+  if (error.name === 'CastError') {
+    return response.satus(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
-  next(error);
-};
+  next(error)
+}
 /* 
 this was used before we connected th app to mongo
 let data = [
@@ -44,23 +42,23 @@ let data = [
     number: "39-23-6423122",
   },
 ]; */
-app.use(express.json());
-app.use(cors());
-app.use(express.static("build"));
+app.use(express.json())
+app.use(cors())
+app.use(express.static('build'))
 
-app.get("/info", (request, response) => {
+app.get('/info', (request, response) => {
   Person.countDocuments({}, (error, count) => {
     response.send(
       `<p>
     Phonebook has info for ${count} people
   </p>
   <p>${new Date()}</p>`
-    );
-  });
-});
+    )
+  })
+})
 
-app.post("/api/persons", (request, response, next) => {
-  const body = request.body;
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
   //console.log("this is the body:", body, !body.name);
   /*  if (!body.name || !body.number) {
     console.log("found it!");
@@ -77,65 +75,65 @@ app.post("/api/persons", (request, response, next) => {
   const phoneData = new Person({
     ...body,
     date: new Date(),
-  });
+  })
 
   phoneData
     .save()
     .then((savedPhone) => {
-      console.log("Phone succesfully saved!");
-      response.json(savedPhone);
+      console.log('Phone succesfully saved!')
+      response.json(savedPhone)
     })
     .catch((error) => {
-      next(error);
-    });
-});
-app.get("/api/persons", (request, response) => {
+      next(error)
+    })
+})
+app.get('/api/persons', (request, response) => {
   Person.find({}).then((phoneBook) => {
-    response.json(phoneBook);
-  });
-});
+    response.json(phoneBook)
+  })
+})
 
-app.get("/api/persons/:id", (request, response) => {
+app.get('/api/persons/:id', (request, response) => {
   /* const id = Number(request.params.id);
   const phoneData = data.find((person) => person.id === id);
   //response.json(phoneData);
   response.send(`<p>the data is ${JSO.stringify(phoneData)}</p>`); */
 
   Person.findById(request.params.id).then((foundPerson) => {
-    response.json(foundPerson);
-  });
-});
+    response.json(foundPerson)
+  })
+})
 
-app.delete("/api/persons/:id", (request, response, next) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   /*    const id = Number(request.params.id);
 
   response.status(204).end(); */
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
-      response.status(204).end();
+      response.status(204).end()
     })
     .catch((error) => {
-      next(error);
-    });
-});
-app.put("/api/persons/:id", (request, response, next) => {
-  console.log("this is the body:", request.body); //The request body is the second parameter in the put method
-  const phoneNumber = request.body;
+      next(error)
+    })
+})
+app.put('/api/persons/:id', (request, response, next) => {
+  console.log('this is the body:', request.body) //The request body is the second parameter in the put method
+  const phoneNumber = request.body
 
   Person.findByIdAndUpdate(request.params.id, phoneNumber, {
     new: true,
     runValidators: true,
-    context: "query",
+    context: 'query',
   })
     .then((updatedPhone) => {
-      response.json(updatedPhone);
+      response.json(updatedPhone)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
-app.use(errorHandler);
+app.use(errorHandler)
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log(`Server runing on port ${PORT}`);
-});
+  console.log(`Server runing on port ${PORT}`)
+})
