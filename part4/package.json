@@ -4,7 +4,7 @@
   "description": "part4 blog list application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -16,6 +16,11 @@
     "express": "^4.18.2",
     "mongoose": "^6.9.0",
     "nodemon": "^2.0.20"
+  },
+  "devDependencies": {
+    "jest": "^29.4.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
-
 }

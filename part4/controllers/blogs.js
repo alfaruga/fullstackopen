@@ -3,9 +3,9 @@ const Blogg = require("../models/blog");
 
 bloggsRouter.get("/", (request, response, next) => {
   Blogg.find({})
-    .then((blogg) => {
-      if (blogg) {
-        response.json(blogg);
+    .then((allBlogs) => {
+      if (allBlogs) {
+        response.json(allBlogs);
       } else {
         response.status(404).end();
       }
