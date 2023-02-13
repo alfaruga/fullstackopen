@@ -62,7 +62,6 @@ const mostLikes = (listOfBlogs) => {
   };
 
   const authorsAndLikes = listOfBlogs.reduce(authorsLikesFilter, {});
-  console.log(authorsAndLikes);
 
   const findMostLikedAtuhor = (mostLiked, currenAuthor) => {
     if (mostLiked.likes < currenAuthor.likes) {

@@ -1,34 +1,29 @@
-const bloggsRouter = require("express").Router();
-const Blogg = require("../models/blog");
+const blogsRouter = require("express").Router();
+const Blog = require("../models/blog");
 
-bloggsRouter.get("/", (request, response, next) => {
-  Blogg.find({})
-    .then((allBlogs) => {
-      if (allBlogs) {
-        response.json(allBlogs);
-      } else {
-        response.status(404).end();
-      }
-    })
-    .catch((error) => next(error));
+blogsRouter.get("/", async (request, response) => {
+  const allBlogs = await Blog.find({});
+  if (allBlogs) {
+    response.json(allBlogs);
+  } else {
+    response.status(404).end();
+  }
+  //   .catch((error) => next(error));
 });
 
-bloggsRouter.post("/", (request, response, next) => {
+blogsRouter.post("/", async (request, response) => {
   const body = request.body;
-  const blogg = new Blogg({
+  if (body.title === undefined || body.url === undefined) {
+    return response.status(400).json({ error: "Title or url missing" });
+  }
+  const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
   });
-
-  blogg
-  .save()
-  .then(savedBlogg=>{
-    response.status(201).json(savedBlogg)
-  })
-  .catch(error=>next(error))
+  const savedBlog = await blog.save();
+  response.status(201).json(savedBlog);
 });
 
-
-module.exports = bloggsRouter
+module.exports = blogsRouter;

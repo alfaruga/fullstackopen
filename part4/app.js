@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-const bloggsRouter = require("./controllers/blogs");
+const blogsRouter = require("./controllers/blogs");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const mongoose = require("mongoose");
@@ -18,7 +18,7 @@ mongoose
     logger.info("connected to MongoDB");
   })
   .catch((error) => {
-    logger.error("eerror while connectingto MongoDB:", error.message);
+    logger.error("error while connectingto MongoDB:", error.message);
   });
 
 app.use(cors());
@@ -26,7 +26,7 @@ app.use(express.static("build"));
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-app.use("/api/blogs", bloggsRouter);
+app.use("/api/blogs", blogsRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
