@@ -9,5 +9,5 @@ content-type: application/json
     "title": "How to test with supertest and jest",
     "author": "Me",
     "url": "wwww.example.com",
-    "likes": "65",
+    "likes": "65"
 }

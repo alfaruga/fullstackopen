@@ -1,6 +1,6 @@
 const { application } = require("express");
 const Blog = require("../models/blog");
-
+const User = require("../models/user");
 const initialBlogs = [
   {
     title: "React patterns",
@@ -39,12 +39,23 @@ const initialBlogs = [
     likes: 2,
   },
 ];
-const notesInDb = async () => {
+
+const initialUsers = [
+  { username: "Ivanovna", password: "1562", name: "Ivy" },
+  { username: "Alex", password: "2343", name: "admin" },
+  { username: "Norma", password: "2011", name: "admin2" },
+];
+const blogsInDb = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
 };
-
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
 module.exports = {
   initialBlogs,
-  notesInDb,
+  initialUsers,
+  blogsInDb,
+  usersInDb,
 };
