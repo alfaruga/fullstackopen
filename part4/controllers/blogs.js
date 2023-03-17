@@ -2,8 +2,7 @@ const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const jsonWebToken = require("jsonwebtoken");
-
-
+const { json } = require("express");
 
 blogsRouter.get("/", async (request, response) => {
   const allBlogs = await Blog.find({}).populate("user", {
@@ -46,7 +45,20 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
+  const decodedToken = jsonWebToken.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "invalid token" });
+  }
+
+  const originalAuthor = await Blog.findById(request.params.id);
+  const originalAuthorId = originalAuthor.user.toString();
+  if (originalAuthorId === decodedToken.id) {
+   await Blog.findByIdAndDelete(request.params.id);
+    console.log("Passed test", originalAuthorId.toString(), decodedToken.id);
+  } else {
+    response.status(401).json({error: "You're not allowed to delete blogs from other users"})
+  }
+
   response.status(204).end();
 });
 blogsRouter.put("/:id", async (request, response) => {
