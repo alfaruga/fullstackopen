@@ -3,7 +3,7 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const jsonWebToken = require("jsonwebtoken");
 const { json } = require("express");
-
+const { userExtractor } = require("../utils/middleware");
 blogsRouter.get("/", async (request, response) => {
   const allBlogs = await Blog.find({}).populate("user", {
     username: 1,
@@ -17,13 +17,10 @@ blogsRouter.get("/", async (request, response) => {
   //   .catch((error) => next(error));
 });
 
-blogsRouter.post("/", async (request, response) => {
+blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body;
-  const decodedToken = jsonWebToken.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "invalid token" });
-  }
-  const user = await User.findById(decodedToken.id);
+
+  const user = request.user;
 
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: "Title or url missing" });
@@ -44,19 +41,22 @@ blogsRouter.post("/", async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogsRouter.delete("/:id", async (request, response) => {
-  const decodedToken = jsonWebToken.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "invalid token" });
-  }
+blogsRouter.delete("/:id", userExtractor, async (request, response) => {
+  const authorDeletingId = request.user.id.toString();
 
   const originalAuthor = await Blog.findById(request.params.id);
-  const originalAuthorId = originalAuthor.user.toString();
-  if (originalAuthorId === decodedToken.id) {
-   await Blog.findByIdAndDelete(request.params.id);
-    console.log("Passed test", originalAuthorId.toString(), decodedToken.id);
+
+  console.log(
+    "Ids, deleting and original: ",
+    authorDeletingId,
+    originalAuthor.user.toString()
+  );
+  if (authorDeletingId === originalAuthor.user.toString()) {
+    await Blog.findByIdAndDelete(request.params.id);
   } else {
-    response.status(401).json({error: "You're not allowed to delete blogs from other users"})
+    response
+      .status(401)
+      .json({ error: "You're not allowed to delete blogs from other users" });
   }
 
   response.status(204).end();

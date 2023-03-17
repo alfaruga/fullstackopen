@@ -1,11 +1,10 @@
 POST http://localhost:3003/api/blogs 
 content-type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbnNzc3NzZ3RoIG9mIHRocmVlIiwiaWQiOiI2NDEzNjdjYTZhZThhYjI2YTE0MTRmNjciLCJpYXQiOjE2NzkwMjM0NDB9.QZK8X0PNiNE0FuEoJ8rebLZnqUND3Gjfu0Mylz3K-DA
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vcm1hIiwiaWQiOiI2NDE0ODM4Y2QwM2E1MjJiOTc4MjJlMWUiLCJpYXQiOjE2NzkwNjYxMzZ9.g4kdrmnYwopS2XPp3zgAaMXpRe_tgriBK3Su4DLFPMc
 
 {
-   "title": "Moved into middleware",
-    "author": "Alexis",
+   "title": "Final post with Middleware user extractor",
+    "author": "Alex",
     "url": "wwww.lel.com",
-    "likes": "69",
-    "userId":"6413574934acbf214c944527"  
+    "likes": "55"
 }
