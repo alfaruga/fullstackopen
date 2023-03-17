@@ -6,8 +6,9 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "How to test with supertest and jest",
-    "author": "Me",
-    "url": "wwww.example.com",
-    "likes": "65"
+    "title": "How to post to mongo with an user Id, untauthenticated",
+    "author": "Alexis",
+    "url": "wwww.lel.com",
+    "likes": "69",
+    "userId":"6413574934acbf214c944527"
 }
