@@ -3,7 +3,7 @@ content-type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbnNzc3NzZ3RoIG9mIHRocmVlIiwiaWQiOiI2NDEzNjdjYTZhZThhYjI2YTE0MTRmNjciLCJpYXQiOjE2NzkwMjM0NDB9.QZK8X0PNiNE0FuEoJ8rebLZnqUND3Gjfu0Mylz3K-DA
 
 {
-   "title": "How to post to mongo using tokn authentication only",
+   "title": "Moved into middleware",
     "author": "Alexis",
     "url": "wwww.lel.com",
     "likes": "69",
