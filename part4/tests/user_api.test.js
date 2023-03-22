@@ -53,7 +53,6 @@ describe("test for when there's no users in DB", () => {
       .send(invalidUser)
       .expect(401)
       .expect("Content-type", /application\/json/);
-    console.log(response.body.error);
     expect(response.body.error).toContain(
       "Passwords must be at least 3 characters long"
     );

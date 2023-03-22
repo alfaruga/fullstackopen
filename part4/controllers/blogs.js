@@ -64,15 +64,10 @@ blogsRouter.put("/:id", userExtractor, async (request, response) => {
   };
 
   const blogObject = await Blog.findById(request.params.id);
-  
-  
-  
-
 
   const originalAuthor = blogObject.user.toString();
   const authorEditingId = request.user.id.toString();
-  
-  console.log(originalAuthor, authorEditingId);
+
   if (authorEditingId === originalAuthor) {
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
       new: true,

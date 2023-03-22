@@ -174,7 +174,6 @@ describe("Tests that modify the current state of the database", () => {
     const deleteThis = await Blog.findOne({
       title: "Terrible blog to check if can delete from test with auth",
     });
-    console.log("Delete: ", deleteThis.name, deleteThis.id);
 
     await api
       .delete(`/api/blogs/${deleteThis.id.toString()}`)
@@ -223,7 +222,7 @@ describe("Tests that modify the current state of the database", () => {
       .send(editedBlog)
       .set("authorization", "Bearer " + loginData.body.token)
       .expect("Content-type", /application\/json/);
-    console.log("Response and initial", modifiedResponse.body, blogToEdit.body);
+
     expect(modifiedResponse.body).not.toEqual(blogToEdit.body);
   });
 });
