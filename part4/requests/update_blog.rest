@@ -1,10 +1,10 @@
-POST http://localhost:3003/api/blogs 
+PUT http://localhost:3003/api/blogs/641b28cde44fe71be8e4195e HTTP/1.1
 content-type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZXgiLCJpZCI6IjY0MWIxMTk5MDlkMGI1ZWQ3YTk1MTViNSIsImlhdCI6MTY3OTUwMTUwNCwiZXhwIjoxNjc5NTA1MTA0fQ.MYSyB3m7M0PEsAjVBmLagqgfEsaDGlS9ztZPxM4nzpY
 
 {
-   "title": "PUT test 1",
-    "author": "Alex",
-    "url": "wwww.lel.com",
-    "likes": "55"
+  "title": "PUT test 1",
+  "author": "Alex",
+  "url": "wwww.lel.com",
+  "likes": 69
 }

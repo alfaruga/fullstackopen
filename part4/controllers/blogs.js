@@ -42,8 +42,8 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
 
 blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const authorDeletingId = request.user.id.toString();
-  const authorObject = await Blog.findById(request.params.id)
-const originalAuthor = authorObject.user.toString(); 
+  const blogObject = await Blog.findById(request.params.id);
+  const originalAuthor = blogObject.user.toString();
   if (authorDeletingId === originalAuthor) {
     await Blog.findByIdAndDelete(request.params.id);
   } else {
@@ -56,24 +56,31 @@ const originalAuthor = authorObject.user.toString();
 });
 blogsRouter.put("/:id", userExtractor, async (request, response) => {
   const body = request.body;
-  const user = request.user;
 
   const blog = {
     title: body.title,
     author: body.author,
     likes: body.likes,
   };
-  const originalAuthor = User.findById(request.params.id).user.toString();
+
+  const blogObject = await Blog.findById(request.params.id);
+  
+  
+  
+
+
+  const originalAuthor = blogObject.user.toString();
   const authorEditingId = request.user.id.toString();
-console.log(originalAuthor, authorEditingId)
+  
+  console.log(originalAuthor, authorEditingId);
   if (authorEditingId === originalAuthor) {
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
       new: true,
     });
 
     response.json(updatedBlog);
-  }else{
-    response.status(404).end()
+  } else {
+    response.status(404).end();
   }
 });
 module.exports = blogsRouter;

@@ -19,7 +19,7 @@ const tokenExtractor = (request, response, next) => {
 
   next();
 };
-
+//This prevents unidentified users to modify or add data
 const userExtractor = async (request, response, next) => {
   const decodedToken = jsonWebToken.verify(request.token, process.env.SECRET);
 
