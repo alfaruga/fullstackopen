@@ -6,6 +6,7 @@ const helper = require("./test_helper");
 
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const blog = require("../models/blog");
 
 describe("Tests that validate blogs in DB", () => {
   beforeEach(async () => {
@@ -126,23 +127,40 @@ describe("validates posting features", () => {
 });
 
 describe("Tests that modify the current state of the database", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+    const userAndPass = {
+      username: "NormaTest",
+      password: "2011",
+      name: "normaTest",
+    };
+    await api.post("/api/users").send(userAndPass);
+  });
+
   test("can delete a single blog", async () => {
-    const authenticationSimplified = await authDataFetch();
+    const userAndPass = {
+      username: "NormaTest",
+      password: "2011",
+      name: "normaTest",
+    };
+    const loginData = await api.post("/api/login").send(userAndPass);
+
     const blogToPost = {
       title: "Terrible blog to check if can delete from test with auth",
       author: "Me",
       url: "wwww.example.com",
       likes: "65",
     };
+    const beforePosting = await helper.blogsInDb();
     await api
       .post("/api/blogs")
       .send(blogToPost)
-      .set("authorization", "Bearer " + authenticationSimplified.token)
+      .set("authorization", "Bearer " + loginData.body.token)
       .expect(201)
       .expect("Content-type", /application\/json/);
 
-    // const afterPosting = await helper.blogsInDb();
-    // expect(afterPosting).toHaveLength(helper.initialBlogs.length + 1);
+    const afterPosting = await helper.blogsInDb();
+    expect(afterPosting).toHaveLength(beforePosting.length + 1);
 
     const deleteThis = await Blog.findOne({
       title: "Terrible blog to check if can delete from test with auth",
@@ -151,11 +169,11 @@ describe("Tests that modify the current state of the database", () => {
 
     await api
       .delete(`/api/blogs/${deleteThis.id.toString()}`)
-      .set("authorization", "Bearer " + authenticationSimplified.token)
+      .set("authorization", "Bearer " + loginData.body.token)
       .expect(204);
-
-    const deleted = await Blog.findById(deleteThis.id);
-    expect(deleted).toBeUndefined();
+    const afterDeleting = await helper.blogsInDb();
+    const titles = afterDeleting.map((blog) => blog.title);
+    expect(titles).not.toContain(blogToPost.title);
   });
   test("can modify an existing blog", async () => {
     const blogToPost = {
