@@ -6,14 +6,11 @@ const api = supertest(app);
 const User = require("../models/user");
 const helper = require("./test_helper");
 
-beforeEach(async () => {
-  await User.deleteMany({});
-  const userObjects = helper.initialUsers.map((user) => new User(user));
-  const promiseArray = userObjects.map((u) => u.save());
-  await Promise.all(promiseArray);
-});
-
 describe("test for when there's no users in DB", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+
   test("can add a valid user", async () => {
     const initialUsers = await helper.usersInDb();
     const validUser = {
@@ -61,4 +58,7 @@ describe("test for when there's no users in DB", () => {
       "Passwords must be at least 3 characters long"
     );
   });
+});
+afterAll(async () => {
+  await mongoose.connection.close();
 });

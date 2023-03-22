@@ -1,8 +1,8 @@
 ### Delete for username: AlexisAllGood
 
-DELETE http://localhost:3003/api/blogs/64148eb164e9b4152ebf5a1d
+DELETE http://localhost:3003/api/blogs/641b11bb09d0b5ed7a9515bb
 content-type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vcm1hIiwiaWQiOiI2NDE0ODM4Y2QwM2E1MjJiOTc4MjJlMWUiLCJpYXQiOjE2NzkwNjgxMDF9.BVJl12c2LcdgVZO4wUptm98QLGOd5_KGj0tFBQxmNCI
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZXgiLCJpZCI6IjY0MWIxMTk5MDlkMGI1ZWQ3YTk1MTViNSIsImlhdCI6MTY3OTQ5NTU4MCwiZXhwIjoxNjc5NDk5MTgwfQ.TVEUm44_K6Du9Va--Qw6_k5zEbU0RChh31-1wKBdG2o
 
 ###
 

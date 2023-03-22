@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs 
 content-type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vcm1hIiwiaWQiOiI2NDE0ODM4Y2QwM2E1MjJiOTc4MjJlMWUiLCJpYXQiOjE2NzkwNjYxMzZ9.g4kdrmnYwopS2XPp3zgAaMXpRe_tgriBK3Su4DLFPMc
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZXgiLCJpZCI6IjY0MWIxMTk5MDlkMGI1ZWQ3YTk1MTViNSIsImlhdCI6MTY3OTQ5NTU4MCwiZXhwIjoxNjc5NDk5MTgwfQ.TVEUm44_K6Du9Va--Qw6_k5zEbU0RChh31-1wKBdG2o
 
 {
-   "title": "Final post with Middleware user extractor",
+   "title": "DELETE test 2",
     "author": "Alex",
     "url": "wwww.lel.com",
     "likes": "55"
