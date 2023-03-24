@@ -30,5 +30,6 @@
   "jest": {
     "testEnvironment": "node",
     "globalTeardown": "./tests/teardown.js"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
