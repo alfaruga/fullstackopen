@@ -1,86 +1,123 @@
 import styles from "./App.module.css";
+
 import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import loginService from "./services/login";
 import blogService from "./services/blog";
+
+import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
+import Toggable from "./components/Toggable";
+import BlogFrom from "./components/BlogForm";
+import UserHeader from "./components/UserHeader";
+import BlogList from "./components/BlogList";
+
 function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [blogsInDb, setBlogsInDb] = useState("");
+  const [blogsInDb, setBlogsInDb] = useState([]);
+
+  const blogFormRef = useRef();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    blogService.getBlogs().then((response) => {
+    blogService.getAll().then((response) => {
       setBlogsInDb(response);
     });
   }, []);
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("Clicked log in");
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggeedBlogUser");
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({ username, password });
+      window.localStorage.setItem("loggeedBlogUser", JSON.stringify(user));
+
+      blogService.setToken(user.token);
+
       setUser(user);
-      setUsername("");
-      setPassword("");
+      setTimeout(() => {
+        window.localStorage.clear();
+        setUser(null);
+      }, 3600000);
     } catch (exception) {
+      setError(true);
       setErrorMessage("Wrong Credentials");
       setTimeout(() => {
+        setError(false);
         setErrorMessage(null);
       }, 5000);
     }
   };
+  const addBlogHandler = async (newBlog, newUrl, newAuthor) => {
+    console.log("submited");
+    blogFormRef.current.handleClick();
+    const blogToPost = {
+      title: newBlog,
+      url: newUrl,
+      author: newAuthor,
+    };
+    try {
+      await blogService.create(blogToPost);
+      const updatedBlogs = await blogService.getAll()
+      setBlogsInDb(updatedBlogs);
+
+      setErrorMessage(`new blog: ${newBlog} added`);
+      setTimeout(() => {
+        setErrorMessage(null);
+        setError(false);
+      }, 5000);
+    } catch (error) {
+      setError(true);
+      setErrorMessage(error.response.data.error);
+      setTimeout(() => {
+        setError(false);
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+  const deleteBlogHandler = async (id) => {
+    try {
+      await blogService.deleteBlog(id);
+      const newList = blogsInDb.filter((blog) => id !== blog.id);
+
+      setBlogsInDb(newList);
+      setErrorMessage("Blog succesfully deleted from DB");
+      setTimeout(() => {
+        setErrorMessage(null);
+        setError(false);
+      }, 5000);
+    } catch (error) {
+      alert("something went wrong couldn't delete");
+    }
+  };
+
   return (
     <div className={styles.App}>
+      <Notification message={errorMessage} error={error} />
       <header className="header">
         <div className={styles.header}>
           <h1 className={styles.title}>Blogs app</h1>
         </div>
       </header>
 
-      <form className={styles.std_container} onSubmit={handleLogin}>
-        <h1>Login</h1>
-        <div className={styles.std_input}>
-          <label for="username"> </label>
-          Username
-          <input
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          ></input>
-        </div>
-        <div className={styles.std_input}>
-          <label for="password"> </label>
-          Password
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          ></input>
-        </div>
-        <button type="submit" style={{ marginLeft: "23px", width: "50px" }}>
-          Login
-        </button>
-      </form>
-
+      {user !== null && <UserHeader user={user} setUser={setUser} />}
+      <Toggable label="login" hideLabel={"Cancel"} condition={user}>
+        <LoginForm handleLogin={handleLogin} showLogin={user} />
+      </Toggable>
+      <Toggable label="Add blog" condition={!user} hideLabel={"Cancel"}ref={blogFormRef}>
+        <BlogFrom addBlogHandler={addBlogHandler} />
+      </Toggable>
+      <h2>Blogs</h2>
       <div className={styles.blogs_container}>
-        <ul className={styles.blogs_list}>
-          {blogsInDb.map((blog) => (
-            <li className={styles.blog_title}>{blog.title}</li>
-          ))}
-        </ul>
-      </div>
-      <div className={styles.std_container}>
-        <form onSubmit={() => alert("Submit")}>
-          <div className={styles.std_input}></div>
-          <label for="title">Title:</label>
-          <input id="title" type="text"></input>
-          <button type="submit" className={styles.submit_button}>
-            Submit
-          </button>
-        </form>
+        <BlogList blogs={blogsInDb} deleteBlogHandler={deleteBlogHandler} />
       </div>
     </div>
   );

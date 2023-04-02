@@ -20,7 +20,7 @@ blogsRouter.get("/", async (request, response) => {
 blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body;
   const user = request.user;
-
+  
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: "Title or url missing" });
   }
@@ -46,8 +46,9 @@ blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const originalAuthor = blogObject.user.toString();
   if (authorDeletingId === originalAuthor) {
     await Blog.findByIdAndDelete(request.params.id);
+  
   } else {
-    response
+    return response
       .status(401)
       .json({ error: "You're not allowed to delete blogs from other users" });
   }

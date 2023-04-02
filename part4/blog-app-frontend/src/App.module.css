@@ -1,28 +1,44 @@
-.App {
-  margin: 5px;
-  padding: 5px;
-  text-align: center;
-  font-size: calc(10px + 1vmin);
-
+h1 {
+  margin: 0;
 }
-.title {
-  color: rgb(233, 173, 7);
+h3 {
+  display: inline;
 }
 input {
   height: 20px;
   color: black;
 }
-form{
+
+label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+form {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
 }
-.submit_button{
+li{
+  display: inline;
+}
+.App {
+  margin: 5px;
+  padding: 5px;
+  font-size: calc(10px + 1vmin);
+}
+
+.title {
+  color: rgb(233, 173, 7);
+}
+.submit_button {
   margin-top: 10px;
 }
 .header {
   display: flex;
+  margin-bottom: 2rem;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -30,26 +46,22 @@ form{
   color: white;
 }
 
-.std_container{
+.std_container {
+  border: 2px solid black;
+  box-shadow: 3px 6px;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: fit-content;
 }
-.std_input{
+.std_input {
   width: 250px;
   margin: 3px;
   display: flex;
   justify-content: space-between;
 }
-.blogs_container{
-color: #777;
+.blogs_container {
+  color: #777;
 }
 
-.blogs_list{
-  list-style-type: disc;
-}
-.blog_title{
-  width: fit-content;
-
-}

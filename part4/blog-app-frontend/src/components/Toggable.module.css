@@ -1,0 +1,28 @@
+
+.toggable_button {
+    padding: 3px;
+    margin: 5px;
+    border-radius: 4px;
+    border: none;
+    display: inline;
+    color: white;
+  
+  }
+  .toggable_button:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .cancel_button {
+    background-color: #f44336;
+  }
+  
+  .cancel_button:active {
+    background-color: #c7372d;
+    transform: translateY(2px);
+  }
+  .go_button{
+    background-color: #4CAF50;
+  }
+  .go_button:active {
+    background-color: #028f07e8;
+    transform: translateY(2px);
+  }

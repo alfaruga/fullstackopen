@@ -1,0 +1,11 @@
+.logout_button {
+    display: inline;
+    border: none;
+    padding: 3px;
+    margin: 5px;
+    border-radius: 4px;
+  }
+  
+  .logout_button:active {
+    transform: translateY(2px);
+  }
