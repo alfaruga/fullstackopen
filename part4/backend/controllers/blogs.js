@@ -20,7 +20,7 @@ blogsRouter.get("/", async (request, response) => {
 blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body;
   const user = request.user;
-  
+
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({ error: "Title or url missing" });
   }
@@ -46,7 +46,6 @@ blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const originalAuthor = blogObject.user.toString();
   if (authorDeletingId === originalAuthor) {
     await Blog.findByIdAndDelete(request.params.id);
-  
   } else {
     return response
       .status(401)
@@ -55,28 +54,21 @@ blogsRouter.delete("/:id", userExtractor, async (request, response) => {
 
   response.status(204).end();
 });
-blogsRouter.put("/:id", userExtractor, async (request, response) => {
+blogsRouter.put("/:id", async (request, response) => {
   const body = request.body;
 
   const blog = {
-    title: body.title,
-    author: body.author,
+    user: body.user,
     likes: body.likes,
+    author: body.author,
+    title: body.title,
+    url: body.url,
   };
 
-  const blogObject = await Blog.findById(request.params.id);
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
 
-  const originalAuthor = blogObject.user.toString();
-  const authorEditingId = request.user.id.toString();
-
-  if (authorEditingId === originalAuthor) {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
-      new: true,
-    });
-
-    response.json(updatedBlog);
-  } else {
-    response.status(404).end();
-  }
+  response.json(updatedBlog);
 });
 module.exports = blogsRouter;

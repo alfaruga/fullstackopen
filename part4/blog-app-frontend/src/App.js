@@ -17,9 +17,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [blogsInDb, setBlogsInDb] = useState([]);
+  const [error, setError] = useState(false);
 
   const blogFormRef = useRef();
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((response) => {
@@ -57,7 +57,6 @@ function App() {
     }
   };
   const addBlogHandler = async (newBlog, newUrl, newAuthor) => {
-    console.log("submited");
     blogFormRef.current.handleClick();
     const blogToPost = {
       title: newBlog,
@@ -66,7 +65,7 @@ function App() {
     };
     try {
       await blogService.create(blogToPost);
-      const updatedBlogs = await blogService.getAll()
+      const updatedBlogs = await blogService.getAll();
       setBlogsInDb(updatedBlogs);
 
       setErrorMessage(`new blog: ${newBlog} added`);
@@ -98,6 +97,24 @@ function App() {
       alert("something went wrong couldn't delete");
     }
   };
+  const likesHandler = async (blogid, user, likes, author, title, url) => {
+    const blogToUpdate = {
+      user: user.id,
+      likes: likes + 1,
+      author: author,
+      title: title,
+      url: url,
+    };
+
+    try {
+      const updatedBlog = await blogService.updatedBlog(blogid, blogToUpdate);
+      const updatedList = await blogService.getAll();
+
+      setBlogsInDb(updatedList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={styles.App}>
@@ -112,12 +129,22 @@ function App() {
       <Toggable label="login" hideLabel={"Cancel"} condition={user}>
         <LoginForm handleLogin={handleLogin} showLogin={user} />
       </Toggable>
-      <Toggable label="Add blog" condition={!user} hideLabel={"Cancel"}ref={blogFormRef}>
+      <Toggable
+        label="Add blog"
+        condition={!user}
+        hideLabel={"Cancel"}
+        ref={blogFormRef}
+      >
         <BlogFrom addBlogHandler={addBlogHandler} />
       </Toggable>
       <h2>Blogs</h2>
       <div className={styles.blogs_container}>
-        <BlogList blogs={blogsInDb} deleteBlogHandler={deleteBlogHandler} />
+        <BlogList
+          blogs={blogsInDb}
+          deleteBlogHandler={deleteBlogHandler}
+          likesHandler={likesHandler}
+          activeUser={user?user.username:null}
+        />
       </div>
     </div>
   );

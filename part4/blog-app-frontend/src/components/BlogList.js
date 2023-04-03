@@ -1,15 +1,17 @@
 import styles from "./BlogList.module.css";
 import BlogItem from "./BlogItem";
 
-const BlogList = ({ blogs, deleteBlogHandler }) => {
+const BlogList = ({ blogs, deleteBlogHandler, likesHandler, activeUser }) => {
   return (
     <ul className={styles.blogs_list}>
-      {blogs.map((blog) => {
+      {blogs.sort((a, b)=>b.likes- a.likes).map((blog) => {
         return (
           <BlogItem
             key={blog.id}
             blog={blog}
             deleteBlogHandler={deleteBlogHandler}
+            likesHandler={likesHandler}
+            activeUser={activeUser}
           ></BlogItem>
         );
       })}
