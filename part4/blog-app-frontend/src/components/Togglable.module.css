@@ -1,4 +1,6 @@
-
+.togglable_container{
+  display: inline;
+}
 .toggable_button {
     padding: 3px;
     margin: 5px;

@@ -8,7 +8,7 @@ import blogService from "./services/blog";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import Toggable from "./components/Toggable";
+import Togglable from "./components/Togglable";
 import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
@@ -107,7 +107,7 @@ function App() {
     };
 
     try {
-      const updatedBlog = await blogService.updatedBlog(blogid, blogToUpdate);
+      await blogService.updatedBlog(blogid, blogToUpdate);
       const updatedList = await blogService.getAll();
 
       setBlogsInDb(updatedList);
@@ -126,24 +126,24 @@ function App() {
       </header>
 
       {user !== null && <UserHeader user={user} setUser={setUser} />}
-      <Toggable label="login" hideLabel={"Cancel"} condition={user}>
+      <Togglable label="login" hideLabel={"Cancel"} condition={user}>
         <LoginForm handleLogin={handleLogin} showLogin={user} />
-      </Toggable>
-      <Toggable
+      </Togglable>
+      <Togglable
         label="Add blog"
         condition={!user}
         hideLabel={"Cancel"}
         ref={blogFormRef}
       >
         <BlogFrom addBlogHandler={addBlogHandler} />
-      </Toggable>
+      </Togglable>
       <h2>Blogs</h2>
       <div className={styles.blogs_container}>
         <BlogList
           blogs={blogsInDb}
           deleteBlogHandler={deleteBlogHandler}
           likesHandler={likesHandler}
-          activeUser={user?user.username:null}
+          activeUser={user ? user.username : null}
         />
       </div>
     </div>

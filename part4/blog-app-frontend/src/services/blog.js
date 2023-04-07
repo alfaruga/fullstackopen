@@ -28,4 +28,6 @@ const updatedBlog = async (id, blog) => {
   const updatedBlog = await axios.put(baseUrl + "/" + id, blog);
   return updatedBlog;
 };
-export default { getAll, create, setToken, deleteBlog, updatedBlog };
+
+const modules = { getAll, create, setToken, deleteBlog, updatedBlog };
+export default modules

@@ -1,4 +1,5 @@
 import styles from "./Notification.module.css";
+import {  React } from "react";
 
 const Notification = ({ message, error }) => {
   const style = error ? "errorMessage" : "successMessage";
