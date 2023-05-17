@@ -15,6 +15,14 @@ test("<BlogFrom/ > updates parent state and calls onSubmit", async () => {
   const author = screen.getByPlaceholderText("Enter the author's name");
   const sendButton = screen.getByText("Submit");
 
+
+  /* Alernative to get by Placeholder
+  const title = screen.getByRole('textbox', {name:/title/i});
+  const url = screen.getByRole('textbox', {name:/url/i});
+  const author = screen.getByRole('textbox', {name:/author/i});
+  const sendButton = screen.getByText("Submit");
+  */
+
   await user.type(title, "Title From JS test");
   await user.type(url, "URL From JS test");
   await user.type(author, "Author From JS test");

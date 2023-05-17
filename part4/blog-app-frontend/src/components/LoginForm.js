@@ -18,7 +18,7 @@ const LoginForm = ({ handleLogin, showLogin }) => {
     <form className={styles.std_container} onSubmit={submitHandler}>
       <h1>Login</h1>
       <div className={styles.std_input}>
-        <label for="username">
+        <label htmlFor="username">
           <p>Username</p>
           <input
             type="text"
@@ -29,7 +29,7 @@ const LoginForm = ({ handleLogin, showLogin }) => {
         </label>
       </div>
       <div className={styles.std_input}>
-        <label for="password">
+        <label htmlFor="password">
           <p>Password</p>
           <input
             id="password"
@@ -39,7 +39,7 @@ const LoginForm = ({ handleLogin, showLogin }) => {
           ></input>
         </label>
       </div>
-      <button type="submit" className={styles.form_button}>
+      <button type="submit" id="login-button" className={styles.form_button}>
         Login
       </button>
     </form>

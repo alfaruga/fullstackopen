@@ -6,7 +6,7 @@ import BlogItem from "./BlogItem";
 
 describe("<BlogItem/>", () => {
   let container;
-  const mockHandler = jest.fn()
+  const mockHandler = jest.fn();
 
   beforeEach(() => {
     const blog = {
@@ -19,14 +19,14 @@ describe("<BlogItem/>", () => {
       },
     };
 
-    container = render(
+    render(
       <BlogItem
         blog={blog}
         deleteBlogHandler={null}
         likesHandler={mockHandler}
         activeUser="sssss"
       />
-    ).container;
+    );
   });
   test("only shows title and author by default", async () => {
     const item = await screen.findAllByText("clever title by Alexis");
@@ -49,11 +49,11 @@ describe("<BlogItem/>", () => {
     const button = screen.getByText("View details");
     await user.click(button);
 
-    const likeButton = screen.getByText('Like')
+    const likeButton = screen.getByText("Like");
     await user.click(likeButton);
     await user.click(likeButton);
 
-    screen.debug();
+    //  screen.debug();
 
     expect(mockHandler.mock.calls).toHaveLength(2);
   });

@@ -16,8 +16,7 @@ const BlogFrom = ({ addBlogHandler }) => {
 
   return (
     <form className={styles.std_container} onSubmit={submitHandler}>
-      <div className={styles.std_input}></div>
-      <label for="title">Title:</label>
+      <label htmlFor="title">Title:</label>
       <input
         id="title"
         type="text"
@@ -27,7 +26,7 @@ const BlogFrom = ({ addBlogHandler }) => {
           setNewBlog(event.target.value);
         }}
       ></input>
-      <label for="url">url:</label>
+      <label htmlFor="url">url:</label>
       <input
         id="url"
         type="text"
@@ -37,7 +36,7 @@ const BlogFrom = ({ addBlogHandler }) => {
           setNewUrl(event.target.value);
         }}
       ></input>
-      <label for="author">Author:</label>
+      <label htmlFor="author">Author:</label>
       <input
         id="author"
         type="text"
@@ -47,7 +46,7 @@ const BlogFrom = ({ addBlogHandler }) => {
           setNewAuthor(event.target.value);
         }}
       ></input>
-      <button type="submit" className={styles.form_button}>
+      <button type="submit" id="submit-button"className={styles.form_button}>
         Submit
       </button>
     </form>

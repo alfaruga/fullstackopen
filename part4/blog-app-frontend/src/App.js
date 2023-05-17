@@ -3,7 +3,7 @@ import styles from "./App.module.css";
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 
-import loginService from "./services/login";
+import loginService from './services/login'
 import blogService from "./services/blog";
 
 import Notification from "./components/Notification";
@@ -37,10 +37,16 @@ function App() {
   }, []);
   const handleLogin = async (username, password) => {
     try {
-      const user = await loginService.login({ username, password });
+      
+      const user = await loginService({ username, password });
       window.localStorage.setItem("loggeedBlogUser", JSON.stringify(user));
 
       blogService.setToken(user.token);
+      setErrorMessage(`${username} has loged in`);
+      setTimeout(() => {
+        setErrorMessage(null);
+        setError(false);
+      }, 5000);
 
       setUser(user);
       setTimeout(() => {
@@ -137,7 +143,7 @@ function App() {
       >
         <BlogFrom addBlogHandler={addBlogHandler} />
       </Togglable>
-      <h2>Blogs</h2>
+      <h2>Blogs app made by Alexis Ruiz</h2>
       <div className={styles.blogs_container}>
         <BlogList
           blogs={blogsInDb}
