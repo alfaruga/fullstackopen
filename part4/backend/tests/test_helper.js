@@ -15,7 +15,7 @@ const initialBlogs = [
   },
   {
     title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
+    author: "Edsger W. Orwell",
     url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
     likes: 12,
   },

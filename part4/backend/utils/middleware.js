@@ -13,7 +13,6 @@ const requestLogger = (request, response, next) => {
 };
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get("authorization");
-  console.log("authorization", authorization);
   if (authorization && authorization.startsWith("Bearer ")) {
     request.token = authorization.replace("Bearer ", "");
   }
@@ -40,8 +39,10 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformattedid" });
   } else if (error.name === "ValidationError") {
+    logger.error(error.message)
     return response.status(400).json({ error: error.message });
   } else if (error.name === "JsonWebTokenError") {
+    logger.error(error.message)
     return response.status(401).json({ error: error.message });
   } else if (error.name === "TokenExpiredError") {
     return response.status(401).json({ error: "Token expired" });

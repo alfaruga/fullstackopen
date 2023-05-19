@@ -27,7 +27,7 @@ function App() {
     });
   }, []);
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggeedBlogUser");
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
 
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
@@ -39,7 +39,7 @@ function App() {
     try {
       
       const user = await loginService({ username, password });
-      window.localStorage.setItem("loggeedBlogUser", JSON.stringify(user));
+      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
 
       blogService.setToken(user.token);
       setErrorMessage(`${username} has loged in`);

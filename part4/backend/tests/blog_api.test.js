@@ -11,6 +11,7 @@ describe("Tests that validate blogs in DB", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
+    await User.deleteMany({});
   });
   test("gets blogs as json with the right length", async () => {
     const response = await api
@@ -43,7 +44,7 @@ describe("Tests that validate blogs in DB", () => {
     await api.post("/api/users").send(userAndPass);
     //Login with the created user and get login object for later use
     const loginData = await api.post("/api/login").send(userAndPass);
-
+    console.log("did it log in?", loginData.body);
     const blogWithNolikes = {
       title: "What if it has no likes property",
       author: "Me",
@@ -65,6 +66,8 @@ describe("validates posting features", () => {
   //First delete all users and add a new user for the tests!
 
   beforeEach(async () => {
+    await Blog.deleteMany({});
+    await Blog.insertMany(helper.initialBlogs);
     await User.deleteMany({});
     const userAndPass = {
       username: "NormaTest",
@@ -80,16 +83,17 @@ describe("validates posting features", () => {
     const userAndPass = {
       username: "NormaTest",
       password: "2011",
-      name: "normaTest",
     };
     const loginData = await api.post("/api/login").send(userAndPass);
+    console.log("did it log in?", loginData.body);
     //End of common script
     const blogToPost = {
       title: "How to test with supertest and jest",
-      author: "Me",
+      author: "MeMe should be 3 chars length",
       url: "wwww.example.com",
       likes: "65",
     };
+    console.log("this is the token, should match", loginData.body.token);
     const blogsBefore = await helper.blogsInDb();
     await api
       .post("/api/blogs")
@@ -134,33 +138,34 @@ describe("validates posting features", () => {
 
 describe("Tests that modify the current state of the database", () => {
   //First delete all users and add a new user for the tests!
+
+  var loginData;
+  var blogToPost;
   beforeEach(async () => {
     await User.deleteMany({});
-    const userAndPass = {
-      username: "NormaTest",
-      password: "2011",
-      name: "normaTest",
-    };
-    await api.post("/api/users").send(userAndPass);
-  });
+    await Blog.deleteMany({});
+    await Blog.insertMany(helper.initialBlogs);
 
-  test("can delete a single blog", async () => {
-    /*This is common to all test that require authentication,
-    the login data and request to get the login object*/
-    const userAndPass = {
+    const newUser = {
       username: "NormaTest",
       password: "2011",
       name: "normaTest",
     };
-    const loginData = await api.post("/api/login").send(userAndPass);
-    //End of common script
-    const blogToPost = {
-      title: "Terrible blog to check if can delete from test with auth",
-      author: "Me",
+    await api.post("/api/users").send(newUser);
+
+    const userAndPass = {
+      username: "NormaTest",
+      password: "2011",
+    };
+    loginData = await api.post("/api/login").send(userAndPass);
+
+    blogToPost = {
+      title:
+        "Terrible blog to check if can delete and edit from test with auth",
+      author: "Mess",
       url: "wwww.example.com",
       likes: "65",
     };
-    const beforePosting = await helper.blogsInDb();
     await api
       .post("/api/blogs")
       .send(blogToPost)
@@ -168,57 +173,36 @@ describe("Tests that modify the current state of the database", () => {
       .expect(201)
       .expect("Content-type", /application\/json/);
 
-    const afterPosting = await helper.blogsInDb();
-    expect(afterPosting).toHaveLength(beforePosting.length + 1);
+    const dbBefore = await helper.blogsInDb();
+    const titlesBefore = dbBefore.map((blog) => blog.title);
+    console.log("before deleting", titlesBefore);
+  });
 
-    const deleteThis = await Blog.findOne({
-      title: "Terrible blog to check if can delete from test with auth",
+  test("can delete a single blog", async () => {
+    const blogToDelete = await Blog.findOne({
+      title:
+        "Terrible blog to check if can delete and edit from test with auth",
     });
 
     await api
-      .delete(`/api/blogs/${deleteThis.id.toString()}`)
+      .delete(`/api/blogs/${blogToDelete.id.toString()}`)
       .set("authorization", "Bearer " + loginData.body.token)
       .expect(204);
     const afterDeleting = await helper.blogsInDb();
     const titles = afterDeleting.map((blog) => blog.title);
+    console.log(titles);
     expect(titles).not.toContain(blogToPost.title);
   });
   test("can modify an existing blog", async () => {
-    /*This is common to all test that require authentication,
-    the login data and request to get the login object*/
-    const userAndPass = {
-      username: "NormaTest",
-      password: "2011",
-      user: "normaTest",
-    };
-    //End of common script
-
-    const beforePosting = await helper.blogsInDb();
-
-    const blogToPost = {
+    const blogToEdit = await Blog.findOne({
       title:
-        "Test for update(put) route: AFTER, it you see this something went wrong",
-      author: "Me",
-      url: "wwww.example.com",
-      likes: "65",
-    };
-    const loginData = await api.post("/api/login").send(userAndPass);
+        "Terrible blog to check if can delete and edit from test with auth",
+    });
 
-    const blogToEdit = await api
-      .post("/api/blogs")
-      .send(blogToPost)
-      .set("authorization", "Bearer " + loginData.body.token)
-      .expect(201)
-      .expect("Content-type", /application\/json/);
-
-    const afterPosting = await helper.blogsInDb();
-
-    expect(afterPosting).toHaveLength(beforePosting.length + 1);
-
-    const editedBlog = { ...blogToEdit, title: "We made it!" };
+    const editedBlog = { ...blogToEdit.toJSON(), title: "We made it!" };
 
     const modifiedResponse = await api
-      .put(`/api/blogs/${blogToEdit.body.id}`)
+      .put(`/api/blogs/${blogToEdit.id.toString()}`)
       .send(editedBlog)
       .set("authorization", "Bearer " + loginData.body.token)
       .expect("Content-type", /application\/json/);

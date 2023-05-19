@@ -12,7 +12,7 @@ const BlogItem = ({ blog, deleteBlogHandler, likesHandler, activeUser }) => {
             <p key={Math.random()*100} className={styles.detail}>{detail}</p>
           ))}
           <span>Likes {blog.likes}</span>
-          <button
+          <button id="like-button"
             onClick={() =>
               likesHandler(
                 blog.id,
