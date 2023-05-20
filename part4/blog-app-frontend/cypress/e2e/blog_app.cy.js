@@ -5,9 +5,9 @@ describe("blog app", function () {
       password: "01022023",
       name: "admin2",
     };
-    cy.request("POST", "http://localhost:3001/api/testing/reset");
-    cy.request("POST", "http://localhost:3001/api/users/", user);
-    cy.visit("http://localhost:3000");
+    cy.request("POST", `${Cypress.env('BACKEND')}/testing/reset`);
+    cy.request("POST", `${Cypress.env('BACKEND')}/users`, user);
+    cy.visit("");
   });
   it("front page can be open", function () {
     cy.contains("Blogs app");
@@ -33,14 +33,12 @@ describe("blog app", function () {
 
   describe("when logged in", function () {
     beforeEach(function () {
-      cy.request("POST", "http://localhost:3001/api/login", {
+      //Use command in support instead
+      cy.login({
         username: "Michi",
-        password: "01022023"
-      }).then((response) => {
-        localStorage.setItem('loggedBlogUser', JSON.stringify(response.body))
-        cy.visit('http://localhost:3000')
+        password: "01022023",
       });
-      //This is not recommended check this li for bypassing
+      //This is not recommended check this link for bypassing
       // https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Fully-test-the-login-flow-but-only-once
       /* cy.contains("login").click();
       cy.get("#username").type("Michi");
@@ -57,19 +55,26 @@ describe("blog app", function () {
     });
     describe("and a note exists", function () {
       beforeEach(function () {
-        cy.contains("Add blog").click();
+        cy.addBlog({
+          title: "PUT test 1",
+          author: "Alex",
+          url: "wwww.lel.com",
+          likes: "55",
+        });
+        /* 
+      Use a command that bypasses this stuff
+      cy.contains("Add blog").click();
         cy.get("#title").type("Default blog for testing!");
         cy.get("#url").type("wwww.example.com");
         cy.get("#author").type("Alexis Ruiz");
-        cy.get("#submit-button").click();
+        cy.get("#submit-button").click(); */
       });
 
       it("anyone can like blogs", function () {
         cy.contains("View details").click();
         cy.get("#like-button").click();
-        cy.contains("Likes 1");
+        cy.contains("Likes 56");
       });
     });
-   
   });
 });
