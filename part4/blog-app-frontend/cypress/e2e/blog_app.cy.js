@@ -5,8 +5,8 @@ describe("blog app", function () {
       password: "01022023",
       name: "admin2",
     };
-    cy.request("POST", `${Cypress.env('BACKEND')}/testing/reset`);
-    cy.request("POST", `${Cypress.env('BACKEND')}/users`, user);
+    cy.request("POST", `${Cypress.env("BACKEND")}/testing/reset`);
+    cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
     cy.visit("");
   });
   it("front page can be open", function () {
@@ -14,7 +14,7 @@ describe("blog app", function () {
     cy.contains("Blogs app made by Alexis Ruiz");
   });
 
-  it("login form can be opened and a new session can be started", function () {
+  it("succeeds with correct credentials", function () {
     cy.contains("login").click();
     cy.get("#username").type("Michi");
     cy.get("#password").type("01022023");
@@ -28,7 +28,11 @@ describe("blog app", function () {
     cy.get("#username").type("Michi");
     cy.get("#password").type("wrong password");
     cy.get("#login-button").click();
-    cy.contains("Wrong Credentials");
+    cy.contains("Wrong Credentials").should(
+      "have.css",
+      "background-color",
+      "rgb(211, 211, 211)"
+    );
   });
 
   describe("when logged in", function () {
@@ -38,12 +42,6 @@ describe("blog app", function () {
         username: "Michi",
         password: "01022023",
       });
-      //This is not recommended check this link for bypassing
-      // https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Fully-test-the-login-flow-but-only-once
-      /* cy.contains("login").click();
-      cy.get("#username").type("Michi");
-      cy.get("#password").type("01022023");
-      cy.get("#login-button").click(); */
     });
     it("a new blog can be created", function () {
       cy.contains("Add blog").click();
@@ -53,10 +51,10 @@ describe("blog app", function () {
       cy.get("#submit-button").click();
       cy.contains("End to end testing with Cypress is fun!");
     });
-    describe("and a note exists", function () {
+    describe("and a blog exists", function () {
       beforeEach(function () {
         cy.addBlog({
-          title: "PUT test 1",
+          title: "Default blog for testing!",
           author: "Alex",
           url: "wwww.lel.com",
           likes: "55",
@@ -75,6 +73,19 @@ describe("blog app", function () {
         cy.get("#like-button").click();
         cy.contains("Likes 56");
       });
+
+      it('The author can delete its blogs', function(){
+        cy.contains("Delete blog").click();
+        cy.contains('Blog succesfully deleted from DB').should('have.css', 'background-color', 'rgb(211, 211, 211)')
+      })
+
+      it.only("Nobody but the author can see the delete button", function () {
+        cy.contains("Logout").click();
+        cy.contains("Default blog for testing!").as("theBlog");
+        cy.get("@theBlog").should("not.contain", "Delete blog");
+      });
     });
+
+    
   });
 });
