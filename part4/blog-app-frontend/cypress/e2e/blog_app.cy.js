@@ -5,8 +5,11 @@ describe("blog app", function () {
       password: "01022023",
       name: "admin2",
     };
+  
     cy.request("POST", `${Cypress.env("BACKEND")}/testing/reset`);
     cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
+    
+
     cy.visit("");
   });
   it("front page can be open", function () {
