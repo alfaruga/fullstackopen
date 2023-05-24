@@ -1,19 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+
 import App from "./App";
+import blogReducer from "./reducers/blogReducer";
+import { createStore } from "redux";
+import {Provider} from "react-redux";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-
-const renderApp = () => {
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-};
-
-
-renderApp()
-
-store.subscribe(renderApp)
+const store = createStore(blogReducer);
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);

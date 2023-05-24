@@ -1,0 +1,45 @@
+.blogs_list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .blog_container {
+    border: 2.5px solid;
+    margin-top: min(10px, 1.5rem);
+    padding: 3px;
+    width: min(800px, 70vw);
+  }
+  
+  .detail{
+    margin: 0
+  }
+  .list_button {
+    padding: 3px;
+    margin: 5px;
+    border-radius: 4px;
+    border: none;
+    display: inline;
+    color: white;
+  
+  }
+  .list_button:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .logout_button {
+    background-color: #f44336;
+  }
+  
+  .logout_button:active {
+    background-color: #c7372d;
+    transform: translateY(2px);
+  }
+  .details_button{
+    background-color: #4CAF50;
+  }
+  .details_button:active {
+    background-color: #028f07e8;
+    transform: translateY(2px);
+  }
+  .blog_title {
+    width: fit-content;
+  }
+    

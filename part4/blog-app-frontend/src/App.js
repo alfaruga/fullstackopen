@@ -3,7 +3,7 @@ import styles from "./App.module.css";
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 
-import loginService from './services/login'
+import loginService from "./services/login";
 import blogService from "./services/blog";
 
 import Notification from "./components/Notification";
@@ -13,11 +13,17 @@ import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
 
+import { createBlog, likesHandler } from "./reducers/blogReducer";
+import { useSelector, useDispatch } from "react-redux";
+
 function App() {
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [blogsInDb, setBlogsInDb] = useState([]);
   const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
+  const blogs = useSelector((state) => state);
 
   const blogFormRef = useRef();
 
@@ -37,7 +43,6 @@ function App() {
   }, []);
   const handleLogin = async (username, password) => {
     try {
-      
       const user = await loginService({ username, password });
       window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
 
@@ -103,17 +108,9 @@ function App() {
       alert("something went wrong couldn't delete");
     }
   };
-  const likesHandler = async (blogid, user, likes, author, title, url) => {
-    const blogToUpdate = {
-      user: user.id,
-      likes: likes + 1,
-      author: author,
-      title: title,
-      url: url,
-    };
-
+  const likesHandler = async (blogid) => {
     try {
-      await blogService.updatedBlog(blogid, blogToUpdate);
+      await blogService.updateBlog(blogid);
       const updatedList = await blogService.getAll();
 
       setBlogsInDb(updatedList);

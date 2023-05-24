@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 const anecdotesAtStart = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -6,7 +8,6 @@ const anecdotesAtStart = [
   "Premature optimization is the root of all evil.",
   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 ];
-
 const getId = () => (100000 * Math.random()).toFixed(0);
 
 const asObject = (anecdote) => {
@@ -16,13 +17,32 @@ const asObject = (anecdote) => {
     votes: 0,
   };
 };
-
 const initialState = anecdotesAtStart.map(asObject);
 
-const reducer = (state = initialState, action) => {
-  console.log("state now: ", state);
-  console.log("action", action);
+const anecdotesSlice = createSlice({
+  name: "anecdotes",
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      const anecdote = action.payload;
+      state.push(asObject(anecdote));
+    },
+    vote(state, action) {
+      const anectodeToEdit = state.find(a => a.id === action.payload);
 
+      const editedAnecdote = {
+        ...anectodeToEdit,
+        votes: anectodeToEdit.votes + 1,
+      };
+
+      return state.map((a) =>
+        a.id === editedAnecdote.id ? editedAnecdote : a
+      );
+    },
+  },
+});
+
+/* const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "LIKE":
       return state.map((anecdote) =>
@@ -37,19 +57,21 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-};
+}; */
 
-export const vote = (id) => {
+/* export const vote = (id) => {
   return {
     type: "LIKE",
     payload: { id },
   };
-};
+}; */
 
-export const createAnecdote = (content) => {
+/* export const createAnecdote = (content) => {
   return {
     type: "CREATE",
     payload: { content },
   };
-};
-export default reducer;
+}; */
+
+export const { createAnecdote, vote } = anecdotesSlice.actions;
+export default anecdotesSlice.reducer;

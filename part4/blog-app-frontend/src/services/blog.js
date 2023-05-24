@@ -24,10 +24,10 @@ const deleteBlog = async (id) => {
   await axios.delete(baseUrl + "/" + id, config);
 };
 
-const updatedBlog = async (id, blog) => {
-  const updatedBlog = await axios.put(baseUrl + "/" + id, blog);
+const updateBlog = async (id) => {
+  const updatedBlog = await axios.put(baseUrl + "/" + id);
   return updatedBlog;
 };
 
-const modules = { getAll, create, setToken, deleteBlog, updatedBlog };
+const modules = { getAll, create, setToken, deleteBlog, updateBlog };
 export default modules
