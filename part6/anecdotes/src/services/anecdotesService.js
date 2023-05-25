@@ -9,8 +9,20 @@ const getAll = async () => {
 
 const createNew = async (content) => {
   //for JSON srver, send them as objects with the same  keys as in the DB
-  const sendObject = {"content":content, "votes":0}
+  const sendObject = { content: content, votes: 0 };
   const response = await axios.post(baseUrl, sendObject);
+  console.log("response from server:", response.data);
   return response.data;
 };
-export default { getAll, createNew };
+
+const vote = async (anecdote) => {
+  const response= await axios.put(baseUrl + `/${anecdote.id}`, {
+    ...anecdote,
+    votes: anecdote.votes + 1,
+  });
+
+  return response.data
+};
+
+const anecdotesService = { getAll, createNew, vote }
+export default  anecdotesService

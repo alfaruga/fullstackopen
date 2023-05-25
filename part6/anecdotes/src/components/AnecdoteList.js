@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { vote } from "../reducers/anecdoteReducer";
-import { setMessage, clearMessage } from "../reducers/notificationReducer";
+import { messageToggler } from "../reducers/notificationReducer";
+import { asyncVoting } from "../reducers/anecdoteReducer";
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
@@ -11,13 +11,13 @@ const AnecdoteList = () => {
   });
 
   const voteForAnecdote = (anecdoteId) => {
-    const content = anecdotes.find((a) => a.id === anecdoteId).content;
-    
-    dispatch(vote(anecdoteId));
-    dispatch(setMessage(`you voted for: "${content}"`));
-    setTimeout(() => {
-      dispatch(clearMessage());
-    }, 5000);
+    const anecdote = anecdotes.find((a) => a.id === anecdoteId);
+
+    dispatch(asyncVoting(anecdote));
+  
+
+    dispatch(messageToggler(`you voted for: "${anecdote.content}"`, 5));
+
   };
 
   const content = [...anecdotes]
