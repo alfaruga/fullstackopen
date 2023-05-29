@@ -13,8 +13,6 @@ import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
 
-import { createBlog, likesHandler } from "./reducers/blogReducer";
-import { useSelector, useDispatch } from "react-redux";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -22,8 +20,6 @@ function App() {
   const [blogsInDb, setBlogsInDb] = useState([]);
   const [error, setError] = useState(false);
 
-  const dispatch = useDispatch();
-  const blogs = useSelector((state) => state);
 
   const blogFormRef = useRef();
 

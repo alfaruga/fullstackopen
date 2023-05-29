@@ -1,12 +1,16 @@
 import { useMutation, useQueryClient } from "react-query";
 import { createAnecdote } from "../request";
+import { useContext } from "react";
+import appContext from "../context/appContext";
 
 const AnecdoteForm = () => {
+  const [message, messageDispatch] = useContext(appContext);
+
   const queryClient = useQueryClient();
   const newAnecdoteMutation = useMutation(createAnecdote, {
     onSuccess: (newAnecdote) => {
-      const anecdotes = queryClient.getQueryData('anecdotes')
-      queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote))
+      const anecdotes = queryClient.getQueryData("anecdotes");
+      queryClient.setQueryData("anecdotes", anecdotes.concat(newAnecdote));
       //queryClient.invalidateQueries("anecdotes");
     },
   });
@@ -17,6 +21,7 @@ const AnecdoteForm = () => {
 
     newAnecdoteMutation.mutate({ content: content, votes: 0 });
     event.target.anecdote.value = "";
+    messageDispatch({ type: "ADD", payload: content });
   };
 
   return (

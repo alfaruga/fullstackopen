@@ -1,18 +1,34 @@
+import { useContext, useReducer } from "react";
+import appContext from "../context/appContext";
+
+const notificationReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_MESSAGE":
+      state = `${action.payload}`;
+      return state;
+      case "CLEAR":
+      state = false;
+      return state;
+    default:
+      return state;
+  }
+};
+
 const Notification = () => {
+const [notification, notificationDispatch]= useReducer(notificationReducer, 'Hello')
+const [message, messageDispatch] = useContext(appContext)
+
+
   const style = {
-    border: 'solid',
+    border: "solid",
     padding: 10,
     borderWidth: 1,
-    marginBottom: 5
-  }
-  
-  if (true) return null
+    marginBottom: 5,
+  };
 
-  return (
-    <div style={style}>
-      
-    </div>
-  )
-}
+  if (!notification) return null;
 
-export default Notification
+  return <div  style={style}>{message}</div>;
+};
+
+export default Notification;
