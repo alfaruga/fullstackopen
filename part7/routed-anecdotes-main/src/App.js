@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes, Route, Link, useNavigate, useMatch } from "react-router-dom";
+import { useField } from "./hooks";
 const Menu = () => {
   const padding = {
     paddingRight: 5,
@@ -76,19 +77,31 @@ const Footer = () => (
 );
 
 const CreateNew = (props, setNotification) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField("text", "content");
+  const author = useField("text", "author");
+  const info = useField("text", "info");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
   };
+
+  const reset = (event) => {
+    event.preventDefault();
+    content.reset();
+    author.reset();
+    info.reset();
+  };
+
+  const dynamicKey = "reset";
+  const { [dynamicKey]: _contentReset, ...betterContent } = content;
+  const { [dynamicKey]: _authorReset, ...betterAuthor } = author;
+  const { [dynamicKey]: _infoReset, ...betterInfo } = info;
 
   return (
     <div>
@@ -96,29 +109,18 @@ const CreateNew = (props, setNotification) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...betterContent} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...betterAuthor} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...betterInfo} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button onClick={reset}>reset</button>
       </form>
     </div>
   );
@@ -145,9 +147,7 @@ const App = () => {
       id: 2,
     },
   ]);
-  const [notification, setNotification] = useState(
-    ""
-  );
+  const [notification, setNotification] = useState("");
 
   const match = useMatch("/anecdotes/:id");
   const anecdote = match
@@ -158,7 +158,7 @@ const App = () => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
     navigate("/");
-    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setNotification(`a new anecdote ${anecdote.content} created!`);
     setTimeout(() => {
       const newState = "";
       setNotification(newState);
