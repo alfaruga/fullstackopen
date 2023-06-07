@@ -12,7 +12,13 @@ import Togglable from "./components/Togglable";
 import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
-
+import { useDispatch } from "react-redux";
+import {
+  clearNotification,
+  setNotification,
+} from "./reducers/notificationReducer";
+import { setBlogsInDB, initializeBlogsAction } from "./reducers/blogsReducer";
+import { useSelector } from "react-redux";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,14 +26,15 @@ function App() {
   const [blogsInDb, setBlogsInDb] = useState([]);
   const [error, setError] = useState(false);
 
-
+  const dispatch = useDispatch();
+  const blogs = useSelector(({ blogs }) => {
+    return blogs;
+  });
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((response) => {
-      setBlogsInDb(response);
-    });
-  }, []);
+    dispatch(initializeBlogsAction());
+  }, [dispatch, ]);
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
 
@@ -43,9 +50,8 @@ function App() {
       window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
 
       blogService.setToken(user.token);
-      setErrorMessage(`${username} has loged in`);
       setTimeout(() => {
-        setErrorMessage(null);
+        dispatch(clearNotification());
         setError(false);
       }, 5000);
 
@@ -89,21 +95,7 @@ function App() {
       }, 5000);
     }
   };
-  const deleteBlogHandler = async (id) => {
-    try {
-      await blogService.deleteBlog(id);
-      const newList = blogsInDb.filter((blog) => id !== blog.id);
-
-      setBlogsInDb(newList);
-      setErrorMessage("Blog succesfully deleted from DB");
-      setTimeout(() => {
-        setErrorMessage(null);
-        setError(false);
-      }, 5000);
-    } catch (error) {
-      alert("something went wrong couldn't delete");
-    }
-  };
+  
   const likesHandler = async (blogid) => {
     try {
       await blogService.updateBlog(blogid);
@@ -139,8 +131,6 @@ function App() {
       <h2>Blogs app made by Alexis Ruiz</h2>
       <div className={styles.blogs_container}>
         <BlogList
-          blogs={blogsInDb}
-          deleteBlogHandler={deleteBlogHandler}
           likesHandler={likesHandler}
           activeUser={user ? user.username : null}
         />

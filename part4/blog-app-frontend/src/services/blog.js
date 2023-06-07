@@ -16,12 +16,17 @@ const create = async (newObject) => {
   const config = { headers: { Authorization: token } };
 
   const response = await axios.post(baseUrl, newObject, config);
-  return response;
+  return response.data;
 };
 
 const deleteBlog = async (id) => {
   const config = { headers: { Authorization: token } };
   await axios.delete(baseUrl + "/" + id, config);
+};
+const getOne = async (id) => {
+  console.log("id from blog service",id)
+  const response = await axios.get(baseUrl + "/" + id);
+  return response.data;
 };
 
 const updateBlog = async (id) => {
@@ -29,5 +34,5 @@ const updateBlog = async (id) => {
   return updatedBlog;
 };
 
-const modules = { getAll, create, setToken, deleteBlog, updateBlog };
-export default modules
+const modules = { getAll, create, setToken, deleteBlog, updateBlog, getOne };
+export default modules;

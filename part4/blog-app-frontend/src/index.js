@@ -3,10 +3,23 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import App from "./App";
-import { createStore } from "redux";
-import {Provider} from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
 
-const store = createStore();
+import notificationReducer from "./reducers/notificationReducer";
+import blogsReducer from "./reducers/blogsReducer";
+import errorReducer from "./reducers/errorReducer";
+import userReducer from "./reducers/userReducer";
+
+const store = configureStore({
+  reducer: {
+    notification: notificationReducer,
+    user: userReducer,
+    blogs: blogsReducer,
+    error: errorReducer,
+  },
+});
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <App />

@@ -3,6 +3,15 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const { userExtractor } = require("../utils/middleware");
 
+blogsRouter.get("/:id", async (request, response) => {
+  console.log("did it try from the server?");
+  const blogInDb = await Blog.findById(request.params.id).populate("user", {
+    username: 1,
+    name: 1,
+  });
+  console.log("this should be the blog in DB ", blogInDb);
+  response.json(blogInDb);
+});
 blogsRouter.get("/", async (request, response) => {
   const allBlogs = await Blog.find({}).populate("user", {
     username: 1,
@@ -33,7 +42,7 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
   const savedBlog = await blog.save();
   user.blogs = [...user.blogs, savedBlog];
   await user.save();
-
+  console.log("this is from the BE", savedBlog);
   response.status(201).json(savedBlog);
 });
 
@@ -51,9 +60,10 @@ blogsRouter.delete("/:id", userExtractor, async (request, response) => {
 
   response.status(204).end();
 });
+
 blogsRouter.put("/:id", async (request, response) => {
   const body = request.body;
-
+  console.log("request body", body);
   const updatedBlog = await Blog.findByIdAndUpdate(
     { id: body.id },
     {

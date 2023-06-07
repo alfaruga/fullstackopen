@@ -1,52 +1,49 @@
 import { useState, React } from "react";
 import styles from "./BlogForm.module.css";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { postBlogAction } from "../reducers/blogsReducer";
 
-const BlogFrom = ({ addBlogHandler }) => {
-  const [newBlog, setNewBlog] = useState("");
-  const [newUrl, setNewUrl] = useState("");
-  const [newAuthor, setNewAuthor] = useState("");
-
-  const submitHandler = async (event) => {
+const BlogFrom = () => {
+  const dispatch = useDispatch();
+  /* const submitHandler = async (event) => {
     event.preventDefault();
     await addBlogHandler(newBlog, newUrl, newAuthor);
     setNewBlog("");
     setNewUrl("");
     setNewAuthor("");
+  }; */
+  const makeBlog = (event) => {
+    event.preventDefault();
+    const blog = {
+      title: event.target.title.value,
+      url: event.target.url.value,
+      author: event.target.author.value,
+    };
+    dispatch(postBlogAction(blog));
+
+    event.target.title.value = "";
+    event.target.url.value = "";
+    event.target.author.value = "";
   };
 
   return (
-    <form className={styles.std_container} onSubmit={submitHandler}>
+    <form className={styles.std_container} onSubmit={makeBlog}>
       <label htmlFor="title">Title:</label>
       <input
         id="title"
         type="text"
-        value={newBlog}
         placeholder="Write in the blog's title"
-        onChange={(event) => {
-          setNewBlog(event.target.value);
-        }}
       ></input>
       <label htmlFor="url">url:</label>
-      <input
-        id="url"
-        type="text"
-        value={newUrl}
-        placeholder="Type in the url"
-        onChange={(event) => {
-          setNewUrl(event.target.value);
-        }}
-      ></input>
+      <input id="url" type="text" placeholder="Type in the url"></input>
       <label htmlFor="author">Author:</label>
       <input
         id="author"
         type="text"
-        value={newAuthor}
         placeholder="Enter the author's name"
-        onChange={(event) => {
-          setNewAuthor(event.target.value);
-        }}
       ></input>
-      <button type="submit" id="submit-button"className={styles.form_button}>
+      <button type="submit" id="submit-button" className={styles.form_button}>
         Submit
       </button>
     </form>
