@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blog";
+import { setNotificationAction } from "./notificationReducer";
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -15,6 +16,7 @@ const blogSlice = createSlice({
       return state.filter((b) => b.id !== action.payload);
     },
     updateBlog(state, action) {
+      console.log("from the actions", action.payload);
       return state.map((b) =>
         b.id === action.payload.id ? action.payload : b
       );
@@ -30,9 +32,24 @@ export const initializeBlogsAction = () => {
 };
 export const postBlogAction = (content) => {
   return async (dispatch) => {
-    const saved = await blogService.create(content);
-    const blog = await blogService.getOne(saved.id);
-    dispatch(createBlog(blog));
+    try {
+      const saved = await blogService.create(content);
+      const formatedBlog = await blogService.getOne(saved.id);
+      dispatch(createBlog(formatedBlog));
+      dispatch(
+        setNotificationAction({
+          message: `${saved.title} succesfuly saved`,
+          error: false,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setNotificationAction({
+          message: error.response.data.error,
+          error: true,
+        })
+      );
+    }
   };
 };
 export const deleteBlogAction = (id) => {
@@ -43,10 +60,9 @@ export const deleteBlogAction = (id) => {
 };
 export const likeBlogAction = (id) => {
   return async (dispatch) => {
-    console.log('maformated?', id)
-    const liked = await blogService.updateBlog(id);
-    console.log("liked blog, should have use obj", liked);
-    dispatch(updateBlog(liked));
+    await blogService.updateBlog(id);
+    const formatedBlog = await blogService.getOne(id);
+    dispatch(updateBlog(formatedBlog));
   };
 };
 export const { createBlog, setBlogs, deleteBlogLocal, updateBlog } =

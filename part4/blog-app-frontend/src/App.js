@@ -13,28 +13,18 @@ import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
 import { useDispatch } from "react-redux";
-import {
-  clearNotification,
-  setNotification,
-} from "./reducers/notificationReducer";
-import { setBlogsInDB, initializeBlogsAction } from "./reducers/blogsReducer";
-import { useSelector } from "react-redux";
+import { setNotificationAction } from "./reducers/notificationReducer";
+import { initializeBlogsAction } from "./reducers/blogsReducer";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [blogsInDb, setBlogsInDb] = useState([]);
-  const [error, setError] = useState(false);
 
   const dispatch = useDispatch();
-  const blogs = useSelector(({ blogs }) => {
-    return blogs;
-  });
   const blogFormRef = useRef();
 
   useEffect(() => {
     dispatch(initializeBlogsAction());
-  }, [dispatch, ]);
+  }, [dispatch]);
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
 
@@ -48,12 +38,14 @@ function App() {
     try {
       const user = await loginService({ username, password });
       window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
-
       blogService.setToken(user.token);
-      setTimeout(() => {
-        dispatch(clearNotification());
-        setError(false);
-      }, 5000);
+
+      dispatch(
+        setNotificationAction({
+          message: `${username} logged in`,
+          error: false,
+        })
+      );
 
       setUser(user);
       setTimeout(() => {
@@ -61,55 +53,15 @@ function App() {
         setUser(null);
       }, 3600000);
     } catch (exception) {
-      setError(true);
-      setErrorMessage("Wrong Credentials");
-      setTimeout(() => {
-        setError(false);
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-  const addBlogHandler = async (newBlog, newUrl, newAuthor) => {
-    blogFormRef.current.handleClick();
-    const blogToPost = {
-      title: newBlog,
-      url: newUrl,
-      author: newAuthor,
-    };
-    try {
-      await blogService.create(blogToPost);
-      const updatedBlogs = await blogService.getAll();
-      setBlogsInDb(updatedBlogs);
-
-      setErrorMessage(`new blog: ${newBlog} added`);
-      setTimeout(() => {
-        setErrorMessage(null);
-        setError(false);
-      }, 5000);
-    } catch (error) {
-      setError(true);
-      setErrorMessage(error.response.data.error);
-      setTimeout(() => {
-        setError(false);
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-  
-  const likesHandler = async (blogid) => {
-    try {
-      await blogService.updateBlog(blogid);
-      const updatedList = await blogService.getAll();
-
-      setBlogsInDb(updatedList);
-    } catch (error) {
-      console.log(error);
+      dispatch(
+        setNotificationAction({ message: "Wrong Credentials", error: true })
+      );
     }
   };
 
   return (
     <div className={styles.App}>
-      <Notification message={errorMessage} error={error} />
+      <Notification />
       <header className="header">
         <div className={styles.header}>
           <h1 className={styles.title}>Blogs app</h1>
@@ -126,14 +78,11 @@ function App() {
         hideLabel={"Cancel"}
         ref={blogFormRef}
       >
-        <BlogFrom addBlogHandler={addBlogHandler} />
+        <BlogFrom />
       </Togglable>
       <h2>Blogs app made by Alexis Ruiz</h2>
       <div className={styles.blogs_container}>
-        <BlogList
-          likesHandler={likesHandler}
-          activeUser={user ? user.username : null}
-        />
+        <BlogList activeUser={user ? user.username : null} />
       </div>
     </div>
   );

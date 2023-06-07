@@ -31,7 +31,7 @@ const getOne = async (id) => {
 
 const updateBlog = async (id) => {
   const updatedBlog = await axios.put(baseUrl + "/" + id);
-  return updatedBlog;
+  return updatedBlog.data;
 };
 
 const modules = { getAll, create, setToken, deleteBlog, updateBlog, getOne };

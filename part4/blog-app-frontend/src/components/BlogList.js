@@ -4,7 +4,7 @@ import {  React } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
-const BlogList = ({ likesHandler, activeUser }) => {
+const BlogList = ({ activeUser }) => {
   const dispatch = useDispatch()
   const blogs = useSelector(({blogs})=>{
 return [...blogs].sort((a, b)=>b.likes- a.likes)
@@ -20,7 +20,6 @@ return [...blogs].sort((a, b)=>b.likes- a.likes)
           <BlogItem
             key={blog.id}
             blog={blog}
-            likesHandler={likesHandler}
             activeUser={activeUser}
           ></BlogItem>
         );

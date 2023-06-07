@@ -62,10 +62,11 @@ blogsRouter.delete("/:id", userExtractor, async (request, response) => {
 });
 
 blogsRouter.put("/:id", async (request, response) => {
-  const body = request.body;
-  console.log("request body", body);
+  const body = await Blog.findById(request.params.id);
+
+  console.log("request s, from back end!", body);
   const updatedBlog = await Blog.findByIdAndUpdate(
-    { id: body.id },
+    request.params.id,
     {
       likes: body.likes + 1,
     },
@@ -73,7 +74,10 @@ blogsRouter.put("/:id", async (request, response) => {
       new: true,
     }
   );
-
-  response.json(updatedBlog);
+  
+  response.status(201).json(updatedBlog)
+  
+  
+  
 });
 module.exports = blogsRouter;

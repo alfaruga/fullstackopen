@@ -1,18 +1,11 @@
-import { useState, React } from "react";
+import {  React } from "react";
 import styles from "./BlogForm.module.css";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { postBlogAction } from "../reducers/blogsReducer";
 
 const BlogFrom = () => {
   const dispatch = useDispatch();
-  /* const submitHandler = async (event) => {
-    event.preventDefault();
-    await addBlogHandler(newBlog, newUrl, newAuthor);
-    setNewBlog("");
-    setNewUrl("");
-    setNewAuthor("");
-  }; */
+
   const makeBlog = (event) => {
     event.preventDefault();
     const blog = {
@@ -21,7 +14,6 @@ const BlogFrom = () => {
       author: event.target.author.value,
     };
     dispatch(postBlogAction(blog));
-
     event.target.title.value = "";
     event.target.url.value = "";
     event.target.author.value = "";
