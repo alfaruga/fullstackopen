@@ -2,8 +2,8 @@ import { useState, forwardRef, useImperativeHandle, React } from "react";
 import styles from './Togglable.module.css'
 
 const Togglable = forwardRef((props, refs) => {
+  
   const [visibility, setVisibility] = useState(false);
-
   const handleClick = () => setVisibility(!visibility);
 
   useImperativeHandle(refs, () => {
@@ -11,9 +11,7 @@ const Togglable = forwardRef((props, refs) => {
       handleClick,
     };
   });
-  if (props.condition) {
-    return null;
-  }
+  
   const content = visibility ? (
     <div className={styles.togglable_container} id="togglable_tests">
       <button className={`${styles.toggable_button} ${styles.cancel_button}`} onClick={handleClick}>{props.hideLabel}</button>

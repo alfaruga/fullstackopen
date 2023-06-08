@@ -4,9 +4,6 @@ import { React } from "react";
 
 const Notification = () => {
   const state  = useSelector((state=>state.notification));
-  console.log("from notification",state)
-  console.log('this should be rendered', state.message)
-  console.log('this is the error', state.error)
   const style = state.error ? "errorMessage" : "successMessage";
 
   return state.message ? (

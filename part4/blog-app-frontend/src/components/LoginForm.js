@@ -1,42 +1,41 @@
-import {  useState } from "react";
+import { useState } from "react";
 import React from "react";
 import styles from "./LoginForm.module.css";
+import { loginAction } from "../reducers/userReducer";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const LoginForm = ({ handleLogin, showLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const submitHandler = async (event) => {
+const LoginForm = () => {
+  const user = useSelector(({ username }) => {
+    return username;
+  });
+  const dispatch = useDispatch();
+  const submitHandler = (event) => {
     event.preventDefault();
 
-    await handleLogin(username, password);
-    setUsername("");
-    setPassword("");
+    const loginCredentials = {
+      username: event.target.username.value,
+      password: event.target.password.value,
+    };
+    dispatch(loginAction(loginCredentials));
+
+    event.target.password.value = "";
+    event.target.username.value = "";
   };
 
-  const content = showLogin ? null : (
+  const content = user ? null : (
     <form className={styles.std_container} onSubmit={submitHandler}>
       <h1>Login</h1>
       <div className={styles.std_input}>
         <label htmlFor="username">
           <p>Username</p>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          ></input>
+          <input type="text" id="username"></input>
         </label>
       </div>
       <div className={styles.std_input}>
         <label htmlFor="password">
           <p>Password</p>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          ></input>
+          <input id="password" type="password"></input>
         </label>
       </div>
       <button type="submit" id="login-button" className={styles.form_button}>

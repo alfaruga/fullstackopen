@@ -5,7 +5,6 @@ const notificationSlice = createSlice({
   initialState: { message: "Hello from notification", error: false },
   reducers: {
     setNotification(state, action) {
-      console.log('actions payload error',action.payload.error);
       return { error: action.payload.error, message: action.payload.message };
     },
     clearNotification(state, action) {

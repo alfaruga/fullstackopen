@@ -21,6 +21,7 @@ function App() {
 
   const dispatch = useDispatch();
   const blogFormRef = useRef();
+  const loginFormRef = useRef();
 
   useEffect(() => {
     dispatch(initializeBlogsAction());
@@ -34,30 +35,6 @@ function App() {
       blogService.setToken(user.token);
     }
   }, []);
-  const handleLogin = async (username, password) => {
-    try {
-      const user = await loginService({ username, password });
-      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-
-      dispatch(
-        setNotificationAction({
-          message: `${username} logged in`,
-          error: false,
-        })
-      );
-
-      setUser(user);
-      setTimeout(() => {
-        window.localStorage.clear();
-        setUser(null);
-      }, 3600000);
-    } catch (exception) {
-      dispatch(
-        setNotificationAction({ message: "Wrong Credentials", error: true })
-      );
-    }
-  };
 
   return (
     <div className={styles.App}>
@@ -69,12 +46,15 @@ function App() {
       </header>
 
       {user !== null && <UserHeader user={user} setUser={setUser} />}
-      <Togglable label="login" hideLabel={"Cancel"} condition={user}>
-        <LoginForm handleLogin={handleLogin} showLogin={user} />
+      <Togglable
+        ref={loginFormRef}
+        label="login"
+        hideLabel={"Cancel"}
+      >
+        <LoginForm  />
       </Togglable>
       <Togglable
         label="Add blog"
-        condition={!user}
         hideLabel={"Cancel"}
         ref={blogFormRef}
       >
