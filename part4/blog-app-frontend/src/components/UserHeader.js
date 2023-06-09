@@ -1,20 +1,28 @@
-import {  React } from "react";
+import { React } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styles from "./UserHeader.module.css";
+import { clearUserAction } from "../reducers/userReducer";
 
-import styles from './UserHeader.module.css'
-const UserHeader = ({user, setUser})=>{
+const UserHeader = () => {
+  const dispatch = useDispatch();
+  const user = useSelector(({ user }) => user);
+  return (
+    <>
+      {user !== null && (
+        <>
+          <h3>{user.username}</h3>
+          <button
+            onClick={() => {
+              dispatch(clearUserAction());
+            }}
+            className={styles.logout_button}
+          >
+            Logout
+          </button>
+        </>
+      )}
+    </>
+  );
+};
 
-    return( <>
-        <h3>{user.username}</h3>
-        <button
-          onClick={() => {
-            window.localStorage.clear();
-            setUser(null);
-          }}
-          className={styles.logout_button}
-        >
-          Logout
-        </button>
-      </>)
-}
-
-export default UserHeader
+export default UserHeader;

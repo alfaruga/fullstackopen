@@ -20,33 +20,25 @@ const BlogFrom = () => {
   };
 
   return (
-    <>
-      {user !== null && (
-        <form className={styles.std_container} onSubmit={makeBlog}>
-          <label htmlFor="title">Title:</label>
-          <input
-            id="title"
-            type="text"
-            placeholder="Write in the blog's title"
-          ></input>
-          <label htmlFor="url">url:</label>
-          <input id="url" type="text" placeholder="Type in the url"></input>
-          <label htmlFor="author">Author:</label>
-          <input
-            id="author"
-            type="text"
-            placeholder="Enter the author's name"
-          ></input>
-          <button
-            type="submit"
-            id="submit-button"
-            className={styles.form_button}
-          >
-            Submit
-          </button>
-        </form>
-      )}
-    </>
+    <form className={styles.std_container} onSubmit={makeBlog}>
+      <label htmlFor="title">Title:</label>
+      <input
+        id="title"
+        type="text"
+        placeholder="Write in the blog's title"
+      ></input>
+      <label htmlFor="url">url:</label>
+      <input id="url" type="text" placeholder="Type in the url"></input>
+      <label htmlFor="author">Author:</label>
+      <input
+        id="author"
+        type="text"
+        placeholder="Enter the author's name"
+      ></input>
+      <button type="submit" id="submit-button" className={styles.form_button}>
+        Submit
+      </button>
+    </form>
   );
 };
 

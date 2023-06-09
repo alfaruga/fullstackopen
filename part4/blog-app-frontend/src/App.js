@@ -1,10 +1,7 @@
-import styles from "./App.module.css";
-
 import React from "react";
-import { useState, useEffect, useRef } from "react";
-
-import loginService from "./services/login";
-import blogService from "./services/blog";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef } from "react";
+import styles from "./App.module.css";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
@@ -12,16 +9,15 @@ import Togglable from "./components/Togglable";
 import BlogFrom from "./components/BlogForm";
 import UserHeader from "./components/UserHeader";
 import BlogList from "./components/BlogList";
-import { useDispatch } from "react-redux";
-import { setNotificationAction } from "./reducers/notificationReducer";
+
 import { initializeBlogsAction } from "./reducers/blogsReducer";
+import { setLocalUserAction } from "./reducers/userReducer";
 
 function App() {
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
   const blogFormRef = useRef();
   const loginFormRef = useRef();
+  const user = useSelector(({ user }) => user);
 
   useEffect(() => {
     dispatch(initializeBlogsAction());
@@ -31,8 +27,7 @@ function App() {
 
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(setLocalUserAction(user));
     }
   }, []);
 
@@ -44,25 +39,20 @@ function App() {
           <h1 className={styles.title}>Blogs app</h1>
         </div>
       </header>
-
-      {user !== null && <UserHeader user={user} setUser={setUser} />}
-      <Togglable
-        ref={loginFormRef}
-        label="login"
-        hideLabel={"Cancel"}
-      >
-        <LoginForm  />
-      </Togglable>
-      <Togglable
-        label="Add blog"
-        hideLabel={"Cancel"}
-        ref={blogFormRef}
-      >
-        <BlogFrom />
-      </Togglable>
+      <UserHeader />
+      {user === null && (
+        <Togglable label="login" hideLabel={"Cancel"} ref={loginFormRef}>
+          <LoginForm />
+        </Togglable>
+      )}
+      {user !== null && (
+        <Togglable label="Add blog" hideLabel={"Cancel"} ref={blogFormRef}>
+          <BlogFrom />
+        </Togglable>
+      )}
       <h2>Blogs app made by Alexis Ruiz</h2>
       <div className={styles.blogs_container}>
-        <BlogList activeUser={user ? user.username : null} />
+        <BlogList />
       </div>
     </div>
   );

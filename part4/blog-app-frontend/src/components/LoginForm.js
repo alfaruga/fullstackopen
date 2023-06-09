@@ -6,9 +6,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
 const LoginForm = () => {
-  const user = useSelector(({ username }) => {
-    return username;
-  });
+  const user = useSelector(({ username }) => username);
   const dispatch = useDispatch();
   const submitHandler = (event) => {
     event.preventDefault();

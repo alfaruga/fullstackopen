@@ -34,7 +34,7 @@ export const loginAction = (loginData) => {
         })
       );
     } catch (error) {
-        dispatch(setUser(''));
+      dispatch(setUser(""));
 
       dispatch(
         setNotificationAction({ message: "Wrong Credentials", error: true })
@@ -42,6 +42,19 @@ export const loginAction = (loginData) => {
     }
   };
 };
+export const setLocalUserAction = (user) => {
+  return (dispatch) => {
+    dispatch(setUser(user));
+    blogService.setToken(user.token);
+  };
+};
 
-export const { setUser } = userSlice.actions;
+export const clearUserAction = () => {
+  return (dispatch) => {
+    dispatch(clearUser());
+    window.localStorage.clear();
+  };
+};
+
+export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;
